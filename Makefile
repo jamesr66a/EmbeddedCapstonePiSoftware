@@ -44,4 +44,4 @@ debug: debug.cpp debug.h
 	$(CXX) $(CXXFLAGS) -c -std=c++11 debug.cpp -o build/debug.o
 
 clean:
-	rm main build/*
+	rm -f main build/* 
