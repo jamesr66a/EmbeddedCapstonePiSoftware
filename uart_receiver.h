@@ -28,12 +28,15 @@ typedef struct {
   size_t uart_receiver_callbacks_idx;
   uart_receiver_callback_t callbacks[UART_RECEIVER_CALLBACKS_VECTOR_SIZE];
 
+  // Receive file descriptor
+  int receive_fd;
+
   // Receive buffer members
   size_t receive_buf_idx;
   char receive_buf[sizeof(WiFlyStringWireFormat)];
 } UART_RECEIVER_DATA;
 
-void UART_RECEIVER_Initialize(void);
+void UART_RECEIVER_Initialize(int fd);
 
 void UART_RECEIVER_Tasks(void);
 

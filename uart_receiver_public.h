@@ -19,9 +19,4 @@ typedef int (*uart_receiver_callback_t)(struct UART_RECEIVER_VARIANT *);
 
 int registerUartReceiverCallback(uart_receiver_callback_t callback);
 
-bool sendToUartReceiverQueue(struct UART_RECEIVER_VARIANT *info);
-bool sendToUartReceiverQueueFromISR(struct UART_RECEIVER_VARIANT *info,
-                                          bool *higherPriorityTaskWoken);
-
-
 #endif /* _UART_RECEIVER_PUBLIC_H_ */

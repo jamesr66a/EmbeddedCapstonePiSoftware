@@ -93,16 +93,16 @@ set_field_absent(msg, 1);
 }
 void UartRxData_to_bytes(UartRxData *msg, char *buf, uint32_t seq) {
           size_t offset = sizeof(msg->magic) + sizeof(msg->siphash);
+          msg->seq = seq;
           msg->siphash = siphash24(((char*)msg) + offset, sizeof(*msg) - offset,
                                    "scary spooky skeletons");
           memmove((void *)buf, (void *)msg, sizeof(*msg));
-          msg->seq = seq;
 }
 
 bool UartRxData_from_bytes(UartRxData *msg, const char *buf, uint32_t *seq_out) {
   size_t offset = sizeof(msg->magic) + sizeof(msg->siphash);
   memmove((void *)msg, (void*)buf, sizeof(*msg));
+  *seq_out = msg->seq;
   return (siphash24(((char*)msg) + offset, sizeof(*msg) - offset,
                                    "scary spooky skeletons") == msg->siphash);
-  *seq_out = msg->seq;
 }
