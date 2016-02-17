@@ -112,15 +112,17 @@ void UART_RECEIVER_Tasks(void) {
         // TODO: notify
         std::cerr << "Hash check failed" << std::endl;
         uart_receiverData.state = UART_RECEIVER_FRAME_START_1;
-        break;
+        seq_expected++;
+        return;
       }
 
       if (seq != seq_expected) {
         std::cerr << "Missing sequence number. Expected: " << seq_expected
                   << " Got: " << seq << "\n";
-        seq_expected = seq;
+        seq_expected = seq+1;
+      } else {
+        seq_expected++;
       }
-      seq_expected++;
 
       // Switch back to receiving the first byte of the frame delimiter word.
       uart_receiverData.state = UART_RECEIVER_FRAME_START_1;

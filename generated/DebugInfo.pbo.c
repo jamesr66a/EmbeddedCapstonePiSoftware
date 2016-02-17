@@ -151,6 +151,12 @@ bool DebugInfo_from_bytes(DebugInfo *msg, const char *buf, uint32_t *seq_out) {
   size_t offset = sizeof(msg->magic) + sizeof(msg->siphash);
   memmove((void *)msg, (void*)buf, sizeof(*msg));
   *seq_out = msg->seq;
-  return (siphash24(((char*)msg) + offset, sizeof(*msg) - offset,
-                                   "scary spooky skeletons") == msg->siphash);
+  uint64_t hash = siphash24(((char*)msg) + offset, sizeof(*msg) - offset,
+                                   "scary spooky skeletons");
+  if (hash != msg->siphash) {
+    fprintf(stderr, "Hash discrepancy: %llu %llu\n", hash, msg->siphash);
+    return false;
+  } else {
+    return true;
+  }
 }

@@ -16,7 +16,7 @@ namespace webserver_template {
 		}
 		#line 4 "webserver_view.tmpl"
 		virtual void render() {
-			#line 25 "webserver_view.tmpl"
+			#line 26 "webserver_view.tmpl"
 			out()<<"\n"
 				"<!DOCTYPE html>\n"
 				"<html lang=\"en\">\n"
@@ -38,19 +38,20 @@ namespace webserver_template {
 				"    <![endif]-->\n"
 				"  </head>\n"
 				"  <body><center>\n"
+				"    <h1>Team 16 Dashboard</h1>\n"
 				"    <h1><span class=\"label label-success\">Total number of messages:";
-			#line 25 "webserver_view.tmpl"
-			out()<<cppcms::filters::escape(content.num_messages);
-			#line 25 "webserver_view.tmpl"
-			out()<<"</span><span class=\"label label-success\">Message rate (msgs/minute):";
-			#line 25 "webserver_view.tmpl"
-			out()<<cppcms::filters::escape(content.data_rate);
 			#line 26 "webserver_view.tmpl"
+			out()<<cppcms::filters::escape(content.num_messages);
+			#line 26 "webserver_view.tmpl"
+			out()<<"</span><span class=\"label label-success\">Message rate (msgs/minute):";
+			#line 26 "webserver_view.tmpl"
+			out()<<cppcms::filters::escape(content.data_rate);
+			#line 27 "webserver_view.tmpl"
 			out()<<"</span></h1><br/>\n"
 				"    ";
-			#line 26 "webserver_view.tmpl"
+			#line 27 "webserver_view.tmpl"
 			out()<<cppcms::filters::raw(content.message_list);
-			#line 34 "webserver_view.tmpl"
+			#line 35 "webserver_view.tmpl"
 			out()<<"\n"
 				"    </center>\n"
 				"    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->\n"
@@ -60,31 +61,31 @@ namespace webserver_template {
 				"  </body>\n"
 				"</html>\n"
 				"";
-		#line 34 "webserver_view.tmpl"
+		#line 35 "webserver_view.tmpl"
 		} // end of template render
-	#line 35 "webserver_view.tmpl"
+	#line 36 "webserver_view.tmpl"
 	}; // end of class message
-#line 36 "webserver_view.tmpl"
+#line 37 "webserver_view.tmpl"
 } // end of namespace webserver_template
-#line 37 "webserver_view.tmpl"
+#line 38 "webserver_view.tmpl"
 namespace {
-#line 37 "webserver_view.tmpl"
+#line 38 "webserver_view.tmpl"
  cppcms::views::generator my_generator; 
-#line 37 "webserver_view.tmpl"
+#line 38 "webserver_view.tmpl"
  struct loader { 
-#line 37 "webserver_view.tmpl"
+#line 38 "webserver_view.tmpl"
   loader() { 
-#line 37 "webserver_view.tmpl"
+#line 38 "webserver_view.tmpl"
    my_generator.name("webserver_template");
-#line 37 "webserver_view.tmpl"
+#line 38 "webserver_view.tmpl"
    my_generator.add_view<webserver_template::message,content::message>("message",true);
-#line 37 "webserver_view.tmpl"
+#line 38 "webserver_view.tmpl"
     cppcms::views::pool::instance().add(my_generator);
-#line 37 "webserver_view.tmpl"
+#line 38 "webserver_view.tmpl"
  }
-#line 37 "webserver_view.tmpl"
+#line 38 "webserver_view.tmpl"
  ~loader() {  cppcms::views::pool::instance().remove(my_generator); }
-#line 37 "webserver_view.tmpl"
+#line 38 "webserver_view.tmpl"
 } a_loader;
-#line 37 "webserver_view.tmpl"
+#line 38 "webserver_view.tmpl"
 } // anon 
