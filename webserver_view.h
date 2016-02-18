@@ -8,6 +8,7 @@ namespace content {
   struct message: public cppcms::base_content {
     std::string num_messages;
     std::string data_rate;
+    std::string message_list;
   };
 }
 

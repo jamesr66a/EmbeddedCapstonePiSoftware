@@ -12,12 +12,17 @@ void sendToWebserverModelQueue(DebugInfo *info) {
 
 int aggregate_debug_info_count() {
   std::lock_guard<std::mutex>(webserver_modelData.data_mutex);
-  return webserver_modelData.rate_per_min;
+  return webserver_modelData.total_num;
 }
 
 float aggregate_debug_info_rate_per_minute() {
   std::lock_guard<std::mutex>(webserver_modelData.data_mutex);
-  return webserver_modelData.total_num;
+  return webserver_modelData.rate_per_min;
+}
+
+std::vector<DebugInfo> aggregate_info_vector() {
+  std::lock_guard<std::mutex>(webserver_modelData.data_mutex);
+  return webserver_modelData.data_vec;
 }
 
 // Internal functions

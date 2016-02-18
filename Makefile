@@ -7,8 +7,11 @@ CXXFLAGS=-g
 main: main.cpp uart_receiver debug uart_transmitter serial webserver_model webserver_view
 	$(CXX) $(CXXFLAGS) -std=c++11 main.cpp build/*.o -o main -pthread -lcppcms -lbooster
 
-webserver_view: webserver_view.h webserver_view.cpp webserver_template
+webserver_view: webserver_view.h webserver_view.cpp webserver_template_cpp
 	$(CXX) $(CXXFLAGS) -c -std=c++11 webserver_view.cpp -o build/webserver_view.o
+
+webserver_template_cpp: webserver_template
+	$(CXX) $(CXXFLAGS) -c -std=c++11 webserver_template.cpp -o build/webserver_template.o
 
 webserver_template: webserver_view.tmpl
 	cppcms_tmpl_cc webserver_view.tmpl -o webserver_template.cpp
