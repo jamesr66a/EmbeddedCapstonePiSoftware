@@ -56,7 +56,6 @@ static void check_magic(const DebugInfo*msg) {
     fprintf(stderr,
             "Invalid magic number for message DebugInfo at %p\n",
             (void *)msg);
-    abort();
   }
 }
 
@@ -78,7 +77,6 @@ if (has_field(msg, 1)) {
 return ntohl(msg->identifier);
 } else {
 fprintf(stderr, "Requested field identifier from DebugInfo at address %p, but message dows not have the field \n", (void*)msg);
-abort();
 }
 }
 void DebugInfo_set_identifier(DebugInfo *msg, int32_t value) {
@@ -104,7 +102,6 @@ if (has_field(msg, 2)) {
 return ntohl(msg->debugID);
 } else {
 fprintf(stderr, "Requested field debugID from DebugInfo at address %p, but message dows not have the field \n", (void*)msg);
-abort();
 }
 }
 void DebugInfo_set_debugID(DebugInfo *msg, int32_t value) {
@@ -130,7 +127,6 @@ if (has_field(msg, 3)) {
 return ntohl(msg->data);
 } else {
 fprintf(stderr, "Requested field data from DebugInfo at address %p, but message dows not have the field \n", (void*)msg);
-abort();
 }
 }
 void DebugInfo_set_data(DebugInfo *msg, int32_t value) {

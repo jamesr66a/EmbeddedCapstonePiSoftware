@@ -56,7 +56,6 @@ static void check_magic(const UartRxData*msg) {
     fprintf(stderr,
             "Invalid magic number for message UartRxData at %p\n",
             (void *)msg);
-    abort();
   }
 }
 
@@ -78,7 +77,6 @@ if (has_field(msg, 1)) {
 return (msg->charData);
 } else {
 fprintf(stderr, "Requested field charData from UartRxData at address %p, but message dows not have the field \n", (void*)msg);
-abort();
 }
 }
 void UartRxData_set_charData(UartRxData *msg, uint8_t value) {
