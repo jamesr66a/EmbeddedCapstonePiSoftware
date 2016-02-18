@@ -2,6 +2,7 @@
 #include "generated/DebugInfo.pbo.h"
 #include "serial.h"
 #include "uart_receiver.h"
+#include "webserver_model.h"
 
 #include <iostream>
 #include <unistd.h>
@@ -124,10 +125,11 @@ void UART_RECEIVER_Tasks(void) {
       // Switch back to receiving the first byte of the frame delimiter word.
       uart_receiverData.state = UART_RECEIVER_FRAME_START_1;
 
-      std::cout << "DebugInfo Received: " << DebugInfo_identifier(&received_obj)
+      /*std::cout << "DebugInfo Received: " << DebugInfo_identifier(&received_obj)
                 << " " << DebugInfo_debugID(&received_obj) << " "
                 << DebugInfo_data(&received_obj) << " sequence number: " << seq
-                << "\n";
+                << "\n";*/
+      sendToWebserverModelQueue(&received_obj);
     }
   } break;
 

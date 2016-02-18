@@ -1,0 +1,12 @@
+<% c++ #include "webserver_view.h" %>
+<% skin my_skin %>
+<% view message uses content::message %>
+<% template render() %>
+<html>
+  <body>
+    <h1><%= num_messages %> <%= data_rate %></h1>
+  </body>
+</html>
+<% end template %>
+<% end view %>
+<% end skin %>

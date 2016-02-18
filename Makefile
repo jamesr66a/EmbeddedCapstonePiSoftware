@@ -4,8 +4,17 @@ CXX=g++
 CFLAGS=-g
 CXXFLAGS=-g
 
-main: main.cpp uart_receiver debug uart_transmitter serial
-	$(CXX) $(CXXFLAGS) -std=c++11 main.cpp build/*.o -o main -pthread
+main: main.cpp uart_receiver debug uart_transmitter serial webserver_model webserver_view
+	$(CXX) $(CXXFLAGS) -std=c++11 main.cpp build/*.o -o main -pthread -lcppcms -lbooster
+
+webserver_view: webserver_view.h webserver_view.cpp webserver_template
+	$(CXX) $(CXXFLAGS) -c -std=c++11 webserver_view.cpp -o build/webserver_view.o
+
+webserver_template: webserver_view.tmpl
+	cppcms_tmpl_cc webserver_view.tmpl -o webserver_template.cpp
+
+webserver_model: webserver_model_public.h webserver_model.h webserver_model.cpp UartRxData DebugInfo
+	$(CXX) $(CXXFLAGS) -c -std=c++11 webserver_model.cpp -o build/webserver_model.o
 
 uart_transmitter: WiFlyStringWireFormat serial csiphash debug uart_transmitter.cpp uart_transmitter.h uart_transmitter_public.h
 	$(CXX) $(CXXFLAGS) -c -std=c++11 uart_transmitter.cpp -o build/uart_transmiter.o
