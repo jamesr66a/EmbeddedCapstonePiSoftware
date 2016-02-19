@@ -1,5 +1,5 @@
-CC=gcc
-CXX=g++
+CC=distcc arm-linux-gnueabihf-gcc
+CXX=distcc arm-linux-gnueabihf-g++
 
 CFLAGS=-g
 CXXFLAGS=-g

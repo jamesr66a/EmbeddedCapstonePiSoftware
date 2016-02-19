@@ -8,6 +8,21 @@
 #include <iostream>
 #include <string>
 
+std::string task_names[] = { "Sensor 1", "RSSI Data Collector", "Encoder 1",
+                             "Encoder 2", "Rover Pose Calculator",
+                             "PID Controller", "Motor 1", "Motor 2" };
+
+std::string event_names[8][2] = {
+  { "Receive", "Send" },
+  { "Receive" },
+  { "Receive" },
+  { "Receive" },
+  { "Receive" },
+  { "Receive" },
+  { "Receive" },
+  { "Receive" },
+};
+
 void webserver_view::main(std::string url) {
   content::message c;
 
@@ -19,13 +34,13 @@ void webserver_view::main(std::string url) {
   c.data_rate = rate;
   c.message_list =
       "<div class = \"container\"><table class = \"table table-striped\">";
-  c.message_list += "<thead><tr><th>Identifier</th><th>Debug "
+  c.message_list += "<thead><tr><th>Task</th><th>Event "
                     "ID</th><th>Data</th></tr></thead><tbody>";
   for (const auto &x : vec) {
-    c.message_list += "<tr><td>" + std::to_string(DebugInfo_identifier(&x)) +
-                      "</td><td>" + std::to_string(DebugInfo_debugID(&x)) +
-                      "</td><td>" + std::to_string(DebugInfo_data(&x)) +
-                      "</td></tr>";
+    c.message_list +=
+        "<tr><td>" + task_names[DebugInfo_identifier(&x)] + "</td><td>" +
+        event_names[DebugInfo_identifier(&x)][DebugInfo_debugID(&x)] +
+        "</td><td>" + std::to_string(DebugInfo_data(&x)) + "</td></tr>";
   }
   c.message_list += "</tbody></table></div>";
 
