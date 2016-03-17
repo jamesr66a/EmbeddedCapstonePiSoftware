@@ -5,11 +5,13 @@
 bool RSSIVectorConstructor::sendToQueue(
     const std::tuple<RSSIData, RoverPose> &d) {
   queue.enqueue(d);
+  return true;
 }
 
 bool RSSIVectorConstructor::registerCallback(vector_ctor_callback_t cb) {
   std::lock_guard<std::mutex> guard(mut);
   callbacks.push_back(cb);
+  return true;
 }
 
 void RSSIVectorConstructor::start() {

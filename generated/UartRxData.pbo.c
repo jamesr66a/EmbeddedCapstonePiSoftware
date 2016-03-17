@@ -69,6 +69,7 @@ uint8_t UartRxData_charData(const UartRxData *msg) {
     fprintf(stderr, "Requested field charData from UartRxData at address %p, "
                     "but message dows not have the field \n",
             (void *)msg);
+    return -1;
   }
 }
 void UartRxData_set_charData(UartRxData *msg, uint8_t value) {

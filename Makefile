@@ -3,11 +3,13 @@
 CC=gcc
 CXX=g++
 
-CFLAGS=-g
-CXXFLAGS=-g
+CFLAGS=-g -Wall -Werror
+CXXFLAGS=-g -Wall -Werror
 
 main: main.cpp uart_receiver debug uart_transmitter serial webserver_model webserver_view RSSIVectorConstructor RoverPose
 	$(CXX) $(CXXFLAGS) -std=c++11 main.cpp build/*.o -o main -pthread -lcppcms -lbooster
+
+test: RSSIVectorConstructor_test
 
 RSSIVectorConstructor_test: RSSIVectorConstructor RSSIVectorConstructor_test.cpp
 	$(CXX) $(CXXFLAGS) -std=c++11 -Igtest_include RSSIVectorConstructor_test.cpp build/RSSIVectorConstructor.o build/csiphash.o build/RSSIData.pbo.o build/RoverPose.pbo.o gtest-all.o gtest_main.o -pthread -o RSSIVectorConstructor_test

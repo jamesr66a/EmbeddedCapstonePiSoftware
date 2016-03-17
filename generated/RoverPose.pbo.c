@@ -69,6 +69,7 @@ int32_t RoverPose_xPosition(const RoverPose *msg) {
     fprintf(stderr, "Requested field xPosition from RoverPose at address %p, "
                     "but message dows not have the field \n",
             (void *)msg);
+    return -1;
   }
 }
 void RoverPose_set_xPosition(RoverPose *msg, int32_t value) {
@@ -96,6 +97,7 @@ int32_t RoverPose_yPosition(const RoverPose *msg) {
     fprintf(stderr, "Requested field yPosition from RoverPose at address %p, "
                     "but message dows not have the field \n",
             (void *)msg);
+    return -1;
   }
 }
 void RoverPose_set_yPosition(RoverPose *msg, int32_t value) {
@@ -123,6 +125,7 @@ int16_t RoverPose_yaw(const RoverPose *msg) {
     fprintf(stderr, "Requested field yaw from RoverPose at address %p, but "
                     "message dows not have the field \n",
             (void *)msg);
+    return -1;
   }
 }
 void RoverPose_set_yaw(RoverPose *msg, int16_t value) {

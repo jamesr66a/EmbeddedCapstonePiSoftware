@@ -47,6 +47,7 @@ static void check_magic(const WiFlyStringWireFormat *msg) {
     fprintf(stderr,
             "Invalid magic number for message WiFlyStringWireFormat at %p\n",
             (void *)msg);
+    return -1;
   }
 }
 
@@ -73,6 +74,7 @@ size_t WiFlyStringWireFormat_msg(const WiFlyStringWireFormat *msg, char *dest,
     fprintf(stderr, "Requested field msg from WiFlyStringWireFormat at address "
                     "%p, but message does not have the field\n",
             (void *)msg);
+    return -1;
   }
 }
 void WiFlyStringWireFormat_set_msg(WiFlyStringWireFormat *msg, const char *src,

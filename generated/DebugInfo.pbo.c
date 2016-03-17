@@ -69,6 +69,7 @@ int32_t DebugInfo_identifier(const DebugInfo *msg) {
     fprintf(stderr, "Requested field identifier from DebugInfo at address %p, "
                     "but message dows not have the field \n",
             (void *)msg);
+    return -1;
   }
 }
 void DebugInfo_set_identifier(DebugInfo *msg, int32_t value) {
@@ -96,6 +97,7 @@ int32_t DebugInfo_debugID(const DebugInfo *msg) {
     fprintf(stderr, "Requested field debugID from DebugInfo at address %p, but "
                     "message dows not have the field \n",
             (void *)msg);
+    return -1;
   }
 }
 void DebugInfo_set_debugID(DebugInfo *msg, int32_t value) {
@@ -123,6 +125,7 @@ int32_t DebugInfo_data(const DebugInfo *msg) {
     fprintf(stderr, "Requested field data from DebugInfo at address %p, but "
                     "message dows not have the field \n",
             (void *)msg);
+    return -1;
   }
 }
 void DebugInfo_set_data(DebugInfo *msg, int32_t value) {

@@ -5,31 +5,21 @@
 #include <mutex>
 #include <condition_variable>
 
-template <class T>
-class SafeQueue
-{
+template <class T> class SafeQueue {
 public:
-  SafeQueue(void)
-    : q()
-    , m()
-    , c()
-  {}
+  SafeQueue(void) : q(), m(), c() {}
 
-  ~SafeQueue(void)
-  {}
+  ~SafeQueue(void) {}
 
-  void enqueue(T t)
-  {
+  void enqueue(T t) {
     std::lock_guard<std::mutex> lock(m);
     q.push(t);
     c.notify_one();
   }
 
-  T dequeue(void)
-  {
+  T dequeue(void) {
     std::unique_lock<std::mutex> lock(m);
-    while(q.empty())
-    {
+    while (q.empty()) {
       c.wait(lock);
     }
     T val = q.front();
@@ -37,10 +27,20 @@ public:
     return val;
   }
 
+  bool empty() {
+    std::lock_guard<std::mutex> lock(m);
+    return q.empty();
+  }
+
+  size_t size() {
+    std::lock_guard<std::mutex> lock(m);
+    return q.size();
+  }
+
 private:
   std::queue<T> q;
   mutable std::mutex m;
   std::condition_variable c;
 };
- 
+
 #endif /* _SAFEQUEUE_H_ */

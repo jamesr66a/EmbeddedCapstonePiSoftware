@@ -3,6 +3,7 @@
 
 #include "generated/RSSIData.pbo.h"
 #include "generated/RoverPose.pbo.h"
+#include "gtest/gtest.h"
 #include "SafeQueue.h"
 
 #include <functional>
@@ -32,6 +33,9 @@ private:
 
   bool started = false;
   mutable std::mutex mut;
+
+  FRIEND_TEST(RegisterCallbackTest, CallbackCheck);
+  FRIEND_TEST(SendToQueueTest, EnqueueTest);
 };
 
 #endif /* _RSSIVECTORCONSTRUCTOR_H_ */
