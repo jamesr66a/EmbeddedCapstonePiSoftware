@@ -10,6 +10,7 @@
 #include <memory>
 #include <mutex>
 #include <thread>
+#include <unordered_map>
 #include <vector>
 
 typedef std::function<void(
@@ -31,11 +32,15 @@ private:
 
   std::vector<vector_ctor_callback_t> callbacks;
 
-  bool started = false;
   mutable std::mutex mut;
+  bool started = false;
+  std::vector<std::tuple<RSSIData, RoverPose>> current_vector;
+  uint32_t current_
 
   FRIEND_TEST(RegisterCallbackTest, CallbackCheck);
   FRIEND_TEST(SendToQueueTest, EnqueueTest);
+  FRIEND_TEST(SimpleProcessTest, TestProcess);
+  FRIEND_TEST(FullVectorTest, TestFullVector);
 };
 
 #endif /* _RSSIVECTORCONSTRUCTOR_H_ */

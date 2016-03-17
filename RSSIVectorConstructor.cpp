@@ -26,7 +26,7 @@ void RSSIVectorConstructor::process() {
   RoverPose rover_pose;
   uint32_t seq_out;
 
-  if (!RSSIData_from_bytes(&std::get<0>(message), (char *)&rssi_data,
+  if (!RSSIData_from_bytes(&rssi_data, (char *)&std::get<0>(message),
                            &seq_out)) {
     std::cerr << "RSSIData message integrity check failed!" << std::endl;
     return;
@@ -35,9 +35,10 @@ void RSSIVectorConstructor::process() {
   if (seq_out != rssi_seq_expected) {
     std::cerr << "RSSIData sequence number check failed. Expected: "
               << rssi_seq_expected << " Got: " << seq_out << std::endl;
+    return;
   }
 
-  if (!RoverPose_from_bytes(&std::get<1>(message), (char *)&rover_pose,
+  if (!RoverPose_from_bytes(&rover_pose, (char *)&std::get<1>(message),
                             &seq_out)) {
     std::cerr << "RoverPose message integrity check failed!" << std::endl;
     return;
@@ -46,7 +47,11 @@ void RSSIVectorConstructor::process() {
   if (seq_out != pose_seq_expected) {
     std::cerr << "RoverPose sequence number check failed. Expected: "
               << pose_seq_expected << " Got: " << seq_out << std::endl;
+    return;
   }
+
+  rssi_seq_expected++;
+  pose_seq_expected++;
 
   constexpr size_t bssid_buf_size = 20;
   char bssid_buf[bssid_buf_size];

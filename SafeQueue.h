@@ -41,6 +41,11 @@ private:
   std::queue<T> q;
   mutable std::mutex m;
   std::condition_variable c;
+
+  FRIEND_TEST(RegisterCallbackTest, CallbackCheck);
+  FRIEND_TEST(SendToQueueTest, EnqueueTest);
+  FRIEND_TEST(SimpleProcessTest, TestProcess);
+  FRIEND_TEST(FullVectorTest, TestFullVector);
 };
 
 #endif /* _SAFEQUEUE_H_ */
