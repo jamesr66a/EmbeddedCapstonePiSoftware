@@ -13,6 +13,7 @@ UART_TRANSMITTER_DATA uart_transmitterData;
 
 bool sendToUartQueue(struct UART_TRANSMITTER_VARIANT *var) {
   uart_transmitterData.rx_queue.enqueue(*var);
+  return true;
 }
 
 // Internal functions
@@ -77,7 +78,7 @@ void UART_TRANSMITTER_Tasks(void) {
     uart_transmitterData.transmit_idx = write(
         uart_transmitterData.transmit_fd, uart_transmitterData.transmit_str,
         uart_transmitterData.transmit_size - uart_transmitterData.transmit_idx);
-    if (uart_transmitterData.transmit_idx == -1) {
+    if (uart_transmitterData.transmit_idx == -1u) {
       perror("Transmit error");
       exit(-1);
     }

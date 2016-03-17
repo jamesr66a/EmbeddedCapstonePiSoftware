@@ -47,7 +47,6 @@ static void check_magic(const WiFlyStringWireFormat *msg) {
     fprintf(stderr,
             "Invalid magic number for message WiFlyStringWireFormat at %p\n",
             (void *)msg);
-    return -1;
   }
 }
 

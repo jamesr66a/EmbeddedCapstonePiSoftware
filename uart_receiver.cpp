@@ -39,6 +39,7 @@ static uint8_t receive_and_unpack() {
     return data;
   } else {
     errorCheck();
+    return -1;
   }
 }
 

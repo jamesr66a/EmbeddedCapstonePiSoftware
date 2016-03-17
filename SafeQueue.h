@@ -5,6 +5,8 @@
 #include <mutex>
 #include <condition_variable>
 
+#include <gtest/gtest.h>
+
 template <class T> class SafeQueue {
 public:
   SafeQueue(void) : q(), m(), c() {}
