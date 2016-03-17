@@ -20,7 +20,6 @@ void RSSIVectorConstructor::start() {
 }
 
 void RSSIVectorConstructor::process() {
-  static uint32_t rssi_seq_expected = 0, pose_seq_expected = 0;
   auto message = queue.dequeue();
   RSSIData rssi_data;
   RoverPose rover_pose;
@@ -63,6 +62,29 @@ void RSSIVectorConstructor::process() {
             << "\tPair sequence no: " << RSSIData_pairSeq(&rssi_data) << "\n"
             << "\tFrame size: " << RSSIData_frameSize(&rssi_data) << "\n"
             << "\tFrame num: " << RSSIData_frameNum(&rssi_data) << "\n";
+
+  std::cout << "Received rover pose message:\n"
+            << "\tx-position: " << RoverPose_xPosition(&rover_pose) << "\n"
+            << "\ty-position: " << RoverPose_yPosition(&rover_pose) << "\n"
+            << "\tyaw: " << RoverPose_yaw(&rover_pose) << "\n";
+
+  if (RSSIData_frameNum(&rssi_data) != current_framenum) {
+    std::cerr << "Inconsistent feature vector frame number. Discarding stored "
+                 "vector\n";
+    current_framenum = RSSIData_frameNum(&rssi_data);
+    current_vector.clear();
+  }
+
+  current_vector.push_back(message);
+  if (current_vector.size() == (size_t)RSSIData_frameSize(&rssi_data)) {
+    std::cout << "Completed a feature vector. Emitting to callbacks\n";
+    std::lock_guard<std::mutex> lk(mut);
+    for (const auto fn : callbacks) {
+      fn(current_vector);
+    }
+    current_vector.clear();
+    current_framenum++;
+  }
 }
 
 void RSSIVectorConstructor::worker_fn() {

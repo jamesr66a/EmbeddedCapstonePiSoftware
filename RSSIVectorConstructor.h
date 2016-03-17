@@ -34,8 +34,10 @@ private:
 
   mutable std::mutex mut;
   bool started = false;
-  std::vector<std::tuple<RSSIData, RoverPose>> current_vector;
-  uint32_t current_
+  std::vector<std::tuple<RSSIData, RoverPose> > current_vector;
+  int32_t current_framenum = 0;
+
+  uint32_t rssi_seq_expected = 0, pose_seq_expected = 0;
 
   FRIEND_TEST(RegisterCallbackTest, CallbackCheck);
   FRIEND_TEST(SendToQueueTest, EnqueueTest);
