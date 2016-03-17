@@ -10,16 +10,16 @@
 #include <stdint.h>
 
 #ifdef __cplusplus
-      extern "C" {
+extern "C" {
 #endif // #ifdef __cplusplus
 
 #define UartRxData_FIELD_MAX (1)
 typedef struct __attribute__((packed)) {
-uint32_t magic;
-uint64_t siphash;
-uint32_t seq;
-unsigned char has_field[UartRxData_FIELD_MAX / CHAR_BIT + 1];
-uint8_t charData;
+  uint32_t magic;
+  uint64_t siphash;
+  uint32_t seq;
+  unsigned char has_field[UartRxData_FIELD_MAX / CHAR_BIT + 1];
+  uint8_t charData;
 } UartRxData;
 void UartRxData_init(UartRxData *msg);
 /*
@@ -33,8 +33,7 @@ void UartRxData_to_bytes(UartRxData *msg, char *buf, uint32_t seq);
 bool UartRxData_from_bytes(UartRxData *msg, const char *buf, uint32_t *seq_out);
 
 #ifdef __cplusplus
-  }
+}
 #endif // #ifdef __cplusplus
 
 #endif
-  

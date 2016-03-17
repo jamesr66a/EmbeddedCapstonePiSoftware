@@ -10,18 +10,18 @@
 #include <stdint.h>
 
 #ifdef __cplusplus
-      extern "C" {
+extern "C" {
 #endif // #ifdef __cplusplus
 
 #define DebugInfo_FIELD_MAX (3)
 typedef struct __attribute__((packed)) {
-uint32_t magic;
-uint64_t siphash;
-uint32_t seq;
-unsigned char has_field[DebugInfo_FIELD_MAX / CHAR_BIT + 1];
-uint32_t identifier;
-uint32_t debugID;
-uint32_t data;
+  uint32_t magic;
+  uint64_t siphash;
+  uint32_t seq;
+  unsigned char has_field[DebugInfo_FIELD_MAX / CHAR_BIT + 1];
+  uint32_t identifier;
+  uint32_t debugID;
+  uint32_t data;
 } DebugInfo;
 void DebugInfo_init(DebugInfo *msg);
 /*
@@ -49,8 +49,7 @@ void DebugInfo_to_bytes(DebugInfo *msg, char *buf, uint32_t seq);
 bool DebugInfo_from_bytes(DebugInfo *msg, const char *buf, uint32_t *seq_out);
 
 #ifdef __cplusplus
-  }
+}
 #endif // #ifdef __cplusplus
 
 #endif
-  
