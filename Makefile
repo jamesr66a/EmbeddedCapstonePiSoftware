@@ -1,11 +1,25 @@
-CC=distcc arm-linux-gnueabihf-gcc
-CXX=distcc arm-linux-gnueabihf-g++
+#CC=arm-linux-gnueabihf-gcc
+#CXX=arm-linux-gnueabihf-g++
+CC=gcc
+CXX=g++
 
 CFLAGS=-g
 CXXFLAGS=-g
 
-main: main.cpp uart_receiver debug uart_transmitter serial webserver_model webserver_view
+main: main.cpp uart_receiver debug uart_transmitter serial webserver_model webserver_view RSSIVectorConstructor RoverPose
 	$(CXX) $(CXXFLAGS) -std=c++11 main.cpp build/*.o -o main -pthread -lcppcms -lbooster
+
+RSSIVectorConstructor_test: RSSIVectorConstructor RSSIVectorConstructor_test.cpp
+	$(CXX) $(CXXFLAGS) -std=c++11 -Igtest_include RSSIVectorConstructor_test.cpp build/RSSIVectorConstructor.o build/csiphash.o build/RSSIData.pbo.o build/RoverPose.pbo.o gtest-all.o gtest_main.o -pthread -o RSSIVectorConstructor_test
+
+RSSIVectorConstructor: RSSIData RoverPose RSSIVectorConstructor.h RSSIVectorConstructor.cpp
+	$(CXX) $(CXXFLAGS) -c -std=c++11 RSSIVectorConstructor.cpp -o build/RSSIVectorConstructor.o
+
+RSSIData: generated/RSSIData.pbo.c generated/RSSIData.pbo.h csiphash
+	$(CXX) $(CXXFLAGS) -c -std=c++11 generated/RSSIData.pbo.c -o build/RSSIData.pbo.o
+
+RoverPose: generated/RoverPose.pbo.c generated/RoverPose.pbo.h csiphash
+	$(CXX) $(CXXFLAGS) -c -std=c++11 generated/RoverPose.pbo.c -o build/RoverPose.pbo.o
 
 webserver_view: webserver_view.h webserver_view.cpp webserver_template_cpp
 	$(CXX) $(CXXFLAGS) -c -std=c++11 webserver_view.cpp -o build/webserver_view.o
