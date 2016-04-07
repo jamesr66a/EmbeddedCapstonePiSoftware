@@ -6,7 +6,7 @@ CXX=g++
 CFLAGS=-g -Wall -Werror -Wno-unused-function
 CXXFLAGS=-g -Wall -Werror -Wno-unused-function
 
-main: main.cpp uart_receiver debug uart_transmitter serial webserver_model webserver_view RSSIVectorConstructor RoverPose
+main: main.cpp uart_receiver debug uart_transmitter serial webserver_model webserver_view RSSIVectorConstructor RoverPose sensors_model rssi_model pid_model
 	$(CXX) $(CXXFLAGS) -std=c++11 main.cpp build/*.o -o main -pthread -lcppcms -lbooster
 
 test: RSSIVectorConstructor_test
@@ -59,6 +59,18 @@ csiphash: csiphash.c
 
 debug: debug.cpp debug.h
 	$(CXX) $(CXXFLAGS) -c -std=c++11 debug.cpp -o build/debug.o
+
+sensors_model: generated/DebugInfo.pbo.h sensors_model.cpp sensors_model.h
+	$(CXX) $(CXXFLAGS) -c -std=c++11 sensors_model.cpp -o build/sensors_model.o
+
+rssi_model: generated/DebugInfo.pbo.h rssi_model.cpp rssi_model.h
+	$(CXX) $(CXXFLAGS) -c -std=c++11 rssi_model.cpp -o build/rssi_model.o
+
+pid_model: generated/DebugInfo.pbo.h pid_model.h pid_model.cpp
+	$(CXX) $(CXXFLAGS) -c -std=c++11 pid_model.cpp -o build/pid_model.o
+
+motor_model: generated/DebugInfo.pbo.h motor_model.h motor_model.cpp
+	$(CXX) $(CXXFLAGS) -c -std=c++11 motor_model.cpp -o build/motor_model.o
 
 proboc_generate:
 	cd generated && ./make.sh && cd ..

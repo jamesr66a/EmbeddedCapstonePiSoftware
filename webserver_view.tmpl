@@ -23,6 +23,19 @@
   </head>
   <body><center>
     <h1>Team 16 Dashboard</h1>
+    <nav class="navbar navbar-default">
+      <div class="navbar-header">
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="/">Home</a></li>
+            <li><a href="/sensors">Sensors</a></li>
+            <li><a href="/rssi">RSSI</a></li>
+            <li><a href="/pid">PID</a></li>
+            <li><a href="/motors">Motors</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
     <h1><span class="label label-success">Total number of messages:<%= num_messages %></span><span class="label label-success">Message rate (msgs/minute):<%= data_rate %></span></h1><br/>
     <%= message_list | raw%>
     </center>

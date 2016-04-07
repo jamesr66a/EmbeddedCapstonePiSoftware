@@ -16,7 +16,7 @@ namespace webserver_template {
 		}
 		#line 4 "webserver_view.tmpl"
 		virtual void render() {
-			#line 26 "webserver_view.tmpl"
+			#line 39 "webserver_view.tmpl"
 			out()<<"\n"
 				"<!DOCTYPE html>\n"
 				"<html lang=\"en\">\n"
@@ -39,19 +39,32 @@ namespace webserver_template {
 				"  </head>\n"
 				"  <body><center>\n"
 				"    <h1>Team 16 Dashboard</h1>\n"
+				"    <nav class=\"navbar navbar-default\">\n"
+				"      <div class=\"navbar-header\">\n"
+				"        <div id=\"navbar\" class=\"navbar-collapse collapse\">\n"
+				"          <ul class=\"nav navbar-nav\">\n"
+				"            <li><a href=\"/\">Home</a></li>\n"
+				"            <li><a href=\"/sensors\">Sensors</a></li>\n"
+				"            <li><a href=\"/rssi\">RSSI</a></li>\n"
+				"            <li><a href=\"/pid\">PID</a></li>\n"
+				"            <li><a href=\"/motors\">Motors</a></li>\n"
+				"          </ul>\n"
+				"        </div>\n"
+				"      </div>\n"
+				"    </nav>\n"
 				"    <h1><span class=\"label label-success\">Total number of messages:";
-			#line 26 "webserver_view.tmpl"
+			#line 39 "webserver_view.tmpl"
 			out()<<cppcms::filters::escape(content.num_messages);
-			#line 26 "webserver_view.tmpl"
+			#line 39 "webserver_view.tmpl"
 			out()<<"</span><span class=\"label label-success\">Message rate (msgs/minute):";
-			#line 26 "webserver_view.tmpl"
+			#line 39 "webserver_view.tmpl"
 			out()<<cppcms::filters::escape(content.data_rate);
-			#line 27 "webserver_view.tmpl"
+			#line 40 "webserver_view.tmpl"
 			out()<<"</span></h1><br/>\n"
 				"    ";
-			#line 27 "webserver_view.tmpl"
+			#line 40 "webserver_view.tmpl"
 			out()<<cppcms::filters::raw(content.message_list);
-			#line 35 "webserver_view.tmpl"
+			#line 48 "webserver_view.tmpl"
 			out()<<"\n"
 				"    </center>\n"
 				"    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->\n"
@@ -61,31 +74,31 @@ namespace webserver_template {
 				"  </body>\n"
 				"</html>\n"
 				"";
-		#line 35 "webserver_view.tmpl"
+		#line 48 "webserver_view.tmpl"
 		} // end of template render
-	#line 36 "webserver_view.tmpl"
+	#line 49 "webserver_view.tmpl"
 	}; // end of class message
-#line 37 "webserver_view.tmpl"
+#line 50 "webserver_view.tmpl"
 } // end of namespace webserver_template
-#line 38 "webserver_view.tmpl"
+#line 51 "webserver_view.tmpl"
 namespace {
-#line 38 "webserver_view.tmpl"
+#line 51 "webserver_view.tmpl"
  cppcms::views::generator my_generator; 
-#line 38 "webserver_view.tmpl"
+#line 51 "webserver_view.tmpl"
  struct loader { 
-#line 38 "webserver_view.tmpl"
+#line 51 "webserver_view.tmpl"
   loader() { 
-#line 38 "webserver_view.tmpl"
+#line 51 "webserver_view.tmpl"
    my_generator.name("webserver_template");
-#line 38 "webserver_view.tmpl"
+#line 51 "webserver_view.tmpl"
    my_generator.add_view<webserver_template::message,content::message>("message",true);
-#line 38 "webserver_view.tmpl"
+#line 51 "webserver_view.tmpl"
     cppcms::views::pool::instance().add(my_generator);
-#line 38 "webserver_view.tmpl"
+#line 51 "webserver_view.tmpl"
  }
-#line 38 "webserver_view.tmpl"
+#line 51 "webserver_view.tmpl"
  ~loader() {  cppcms::views::pool::instance().remove(my_generator); }
-#line 38 "webserver_view.tmpl"
+#line 51 "webserver_view.tmpl"
 } a_loader;
-#line 38 "webserver_view.tmpl"
+#line 51 "webserver_view.tmpl"
 } // anon 
