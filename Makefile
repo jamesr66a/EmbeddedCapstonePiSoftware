@@ -6,7 +6,7 @@ CXX=g++
 CFLAGS=-g -Wall -Werror -Wno-unused-function
 CXXFLAGS=-g -Wall -Werror -Wno-unused-function
 
-main: main.cpp uart_receiver debug uart_transmitter serial webserver_model webserver_view RSSIVectorConstructor RoverPose sensors_model rssi_model pid_model
+main: main.cpp uart_receiver debug uart_transmitter serial webserver_model webserver_view RSSIVectorConstructor RoverPose sensors_model rssi_model pid_model MotorCommand 
 	$(CXX) $(CXXFLAGS) -std=c++11 main.cpp build/*.o -o main -pthread -lcppcms -lbooster
 
 test: RSSIVectorConstructor_test
@@ -21,10 +21,13 @@ RSSIVectorConstructor: RSSIData RoverPose RSSIVectorConstructor.h RSSIVectorCons
 RSSIData: generated/RSSIData.pbo.c generated/RSSIData.pbo.h csiphash proboc_generate
 	$(CXX) $(CXXFLAGS) -c -std=c++11 generated/RSSIData.pbo.c -o build/RSSIData.pbo.o
 
+MotorCommand: generated/MotorCommand.pbo.c generated/MotorCommand.pbo.h csiphash proboc_generate
+	$(CXX) $(CXXFLAGS) -c -std=c++11 generated/MotorCommand.pbo.c -o build/MotorCommand.pbo.o
+
 RoverPose: generated/RoverPose.pbo.c generated/RoverPose.pbo.h csiphash proboc_generate
 	$(CXX) $(CXXFLAGS) -c -std=c++11 generated/RoverPose.pbo.c -o build/RoverPose.pbo.o
 
-webserver_view: webserver_view.h webserver_view.cpp webserver_template_cpp
+webserver_view: webserver_view.h webserver_view.cpp webserver_template_cpp MotorCommand
 	$(CXX) $(CXXFLAGS) -c -std=c++11 webserver_view.cpp -o build/webserver_view.o
 
 webserver_template_cpp: webserver_template

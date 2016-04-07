@@ -1,5 +1,5 @@
 #ifndef _UART_TRANSMITTER_H_
-#define _UART_TRANSMITTER_H_ 
+#define _UART_TRANSMITTER_H_
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -22,7 +22,7 @@ typedef struct {
   UART_TRANSMITTER_STATES state;
   SafeQueue<struct UART_TRANSMITTER_VARIANT> rx_queue;
 
-  char transmit_str[sizeof(WiFlyStringWireFormat)+4];
+  char transmit_str[sizeof(struct UART_TRANSMITTER_VARIANT) + 4];
   size_t transmit_idx;
   size_t transmit_size;
 

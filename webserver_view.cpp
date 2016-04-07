@@ -5,6 +5,7 @@
 #include "pid_model_public.h"
 #include "rssi_model_public.h"
 #include "sensors_model_public.h"
+#include "uart_transmitter_public.h"
 
 #include <cppcms/application.h>
 #include <cppcms/applications_pool.h>
@@ -27,6 +28,17 @@ std::vector<std::string> event_names[8] = {
   { "Receive", "PID Compensation Recalculated" },
   { "Receive", "Command Duty Cycle Set", "PID Duty Cycle Set" },
   { "Receive" },
+};
+
+enum MOTOR1DIRECTION {
+  MOTOR_TESTING,
+  MOTOR_COMMAND_SET,
+  MOTOR_PID_SET,
+  MOTOR_FORWARD,
+  MOTOR_BACKWARD,
+  MOTOR_LEFT,
+  MOTOR_RIGHT,
+  MOTOR_STOP
 };
 
 void webserver_view::main(std::string url) {
@@ -148,5 +160,62 @@ void webserver_view::main(std::string url) {
     c.message_list += "</tbody></table></div>";
 
     render("message", c);
+  } else if (url == "/controls") {
+    render("rover_control_view", c);
+  } else if (url == "/forward") {
+    struct UART_TRANSMITTER_VARIANT var;
+    var.type = MOTOR_MESSAGE_TX;
+    MotorCommand_init(&var.data.motorMessage);
+    MotorCommand_set_direction(&var.data.motorMessage, MOTOR_FORWARD);
+    MotorCommand_set_dutyCycle(&var.data.motorMessage, 50);
+    MotorCommand_set_mode(&var.data.motorMessage, MOTOR_COMMAND_SET);
+    MotorCommand_to_bytes(&var.data.motorMessage,
+                          (char *)&var.data.motorMessage, 0);
+    sendToUartQueue(&var);
+    render("rover_control_view", c);
+  } else if (url == "/left") {
+    struct UART_TRANSMITTER_VARIANT var;
+    var.type = MOTOR_MESSAGE_TX;
+    MotorCommand_init(&var.data.motorMessage);
+    MotorCommand_set_direction(&var.data.motorMessage, MOTOR_LEFT);
+    MotorCommand_set_dutyCycle(&var.data.motorMessage, 50);
+    MotorCommand_set_mode(&var.data.motorMessage, MOTOR_COMMAND_SET);
+    MotorCommand_to_bytes(&var.data.motorMessage,
+                          (char *)&var.data.motorMessage, 0);
+    sendToUartQueue(&var);
+    render("rover_control_view", c);
+  } else if (url == "/right") {
+    struct UART_TRANSMITTER_VARIANT var;
+    var.type = MOTOR_MESSAGE_TX;
+    MotorCommand_init(&var.data.motorMessage);
+    MotorCommand_set_direction(&var.data.motorMessage, MOTOR_RIGHT);
+    MotorCommand_set_dutyCycle(&var.data.motorMessage, 50);
+    MotorCommand_set_mode(&var.data.motorMessage, MOTOR_COMMAND_SET);
+    MotorCommand_to_bytes(&var.data.motorMessage,
+                          (char *)&var.data.motorMessage, 0);
+    sendToUartQueue(&var);
+    render("rover_control_view", c);
+  } else if (url == "/backward") {
+    struct UART_TRANSMITTER_VARIANT var;
+    var.type = MOTOR_MESSAGE_TX;
+    MotorCommand_init(&var.data.motorMessage);
+    MotorCommand_set_direction(&var.data.motorMessage, MOTOR_BACKWARD);
+    MotorCommand_set_dutyCycle(&var.data.motorMessage, 50);
+    MotorCommand_set_mode(&var.data.motorMessage, MOTOR_COMMAND_SET);
+    MotorCommand_to_bytes(&var.data.motorMessage,
+                          (char *)&var.data.motorMessage, 0);
+    sendToUartQueue(&var);
+    render("rover_control_view", c);
+  } else if (url == "/stop") {
+    struct UART_TRANSMITTER_VARIANT var;
+    var.type = MOTOR_MESSAGE_TX;
+    MotorCommand_init(&var.data.motorMessage);
+    MotorCommand_set_direction(&var.data.motorMessage, MOTOR_BACKWARD);
+    MotorCommand_set_dutyCycle(&var.data.motorMessage, 0);
+    MotorCommand_set_mode(&var.data.motorMessage, MOTOR_COMMAND_SET);
+    MotorCommand_to_bytes(&var.data.motorMessage,
+                          (char *)&var.data.motorMessage, 0);
+    sendToUartQueue(&var);
+    render("rover_control_view", c);
   }
 }
