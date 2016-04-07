@@ -34,11 +34,14 @@ void webserver_view::main(std::string url) {
   c.data_rate = rate;
   c.message_list =
       "<div class = \"container\"><table class = \"table table-striped\">";
-  c.message_list += "<thead><tr><th>Task</th><th>Event "
-                    "ID</th><th>Data</th></tr></thead><tbody>";
-  for (const auto &x : vec) {
+  c.message_list +=
+      "<thead><tr><th>Timestamp (cycles)</th><th>Task</th><th>Event "
+      "ID</th><th>Data</th></tr></thead><tbody>";
+  for (auto itr = vec.rbegin(); itr != vec.rend(); itr++) {
+    auto &x = *itr;
     c.message_list +=
-        "<tr><td>" + task_names[DebugInfo_identifier(&x)] + "</td><td>" +
+        "<tr><td>" + std::to_string((uint32_t)DebugInfo_cpuTicks(&x)) + "<td>" +
+        task_names[DebugInfo_identifier(&x)] + "</td><td>" +
         event_names[DebugInfo_identifier(&x)][DebugInfo_debugID(&x)] +
         "</td><td>" + std::to_string(DebugInfo_data(&x)) + "</td></tr>";
   }

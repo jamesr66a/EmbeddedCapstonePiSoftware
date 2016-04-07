@@ -71,7 +71,7 @@ size_t RSSIData_bssid(const RSSIData *msg, char *dest, size_t lim) {
     fprintf(stderr, "Requested field bssid from RSSIData at address %p, but "
                     "message does not have the field\n",
             (void *)msg);
-    return -1;
+    return 0;
   }
 }
 void RSSIData_set_bssid(RSSIData *msg, const char *src, size_t src_len) {
@@ -99,7 +99,7 @@ int16_t RSSIData_rssi(const RSSIData *msg) {
     return ntohs(msg->rssi);
   } else {
     fprintf(stderr, "Requested field rssi from RSSIData at address %p, but "
-                    "message dows not have the field \n",
+                    "message do3s not have the field \n",
             (void *)msg);
     return -1;
   }
@@ -127,7 +127,7 @@ int32_t RSSIData_pairSeq(const RSSIData *msg) {
     return ntohl(msg->pairSeq);
   } else {
     fprintf(stderr, "Requested field pairSeq from RSSIData at address %p, but "
-                    "message dows not have the field \n",
+                    "message do3s not have the field \n",
             (void *)msg);
     return -1;
   }
@@ -155,7 +155,7 @@ int32_t RSSIData_frameSize(const RSSIData *msg) {
     return ntohl(msg->frameSize);
   } else {
     fprintf(stderr, "Requested field frameSize from RSSIData at address %p, "
-                    "but message dows not have the field \n",
+                    "but message do3s not have the field \n",
             (void *)msg);
     return -1;
   }
@@ -183,7 +183,7 @@ int32_t RSSIData_frameNum(const RSSIData *msg) {
     return ntohl(msg->frameNum);
   } else {
     fprintf(stderr, "Requested field frameNum from RSSIData at address %p, but "
-                    "message dows not have the field \n",
+                    "message do3s not have the field \n",
             (void *)msg);
     return -1;
   }

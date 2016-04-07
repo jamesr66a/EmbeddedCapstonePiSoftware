@@ -73,7 +73,7 @@ size_t WiFlyStringWireFormat_msg(const WiFlyStringWireFormat *msg, char *dest,
     fprintf(stderr, "Requested field msg from WiFlyStringWireFormat at address "
                     "%p, but message does not have the field\n",
             (void *)msg);
-    return -1;
+    return 0;
   }
 }
 void WiFlyStringWireFormat_set_msg(WiFlyStringWireFormat *msg, const char *src,

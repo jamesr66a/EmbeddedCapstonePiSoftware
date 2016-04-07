@@ -65,3 +65,16 @@ DebugInfo_clear_data(&my_message);
 EXPECT_EQ(false, DebugInfo_has_data(&my_message));
 EXPECT_EQ(0x00000000, my_message.data);
 }
+TEST(DebugInfo_cpuTicks, cpuTicks_test){
+DebugInfo my_message;
+DebugInfo_init(&my_message);
+EXPECT_EQ(0xDEADBEEF, my_message.magic);EXPECT_EQ(false, DebugInfo_has_cpuTicks(&my_message));
+EXPECT_EQ(0x00000000, my_message.cpuTicks);
+DebugInfo_set_cpuTicks(&my_message, 0x12345678);
+EXPECT_EQ(true, DebugInfo_has_cpuTicks(&my_message));
+EXPECT_EQ(htonl(0x12345678), my_message.cpuTicks);
+EXPECT_EQ(0x12345678, DebugInfo_cpuTicks(&my_message));
+DebugInfo_clear_cpuTicks(&my_message);
+EXPECT_EQ(false, DebugInfo_has_cpuTicks(&my_message));
+EXPECT_EQ(0x00000000, my_message.cpuTicks);
+}
