@@ -2,5 +2,5 @@
 #define _DEBUG_H_
 
 void errorCheck();
- 
+
 #endif /* _DEBUG_H_ */

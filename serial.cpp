@@ -30,7 +30,8 @@ int set_interface_attribs(int fd, int speed, int parity) {
   tty.c_cc[VMIN] = 0;     // read doesn't block
   tty.c_cc[VTIME] = 5;    // 0.5 seconds read timeout
 
-  tty.c_iflag &= ~(IXON | IXOFF | IXANY | INLCR | ICRNL); // shut off xon/xoff ctrl
+  tty.c_iflag &=
+      ~(IXON | IXOFF | IXANY | INLCR | ICRNL); // shut off xon/xoff ctrl
 
   tty.c_cflag |= (CLOCAL | CREAD);   // ignore modem controls,
                                      // enable reading
@@ -60,4 +61,3 @@ void set_blocking(int fd, int should_block) {
   if (tcsetattr(fd, TCSANOW, &tty) != 0)
     perror("error setting term attributes");
 }
-

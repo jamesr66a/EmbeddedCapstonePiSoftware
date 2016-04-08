@@ -27,25 +27,23 @@ std::vector<DebugInfo> rssi_aggregate_info_vector() {
 
 // Internal functions
 
-void RSSI_MODEL_Initialize() {
-  rssi_modelData.state = RSSI_MODEL_INIT;
-}
+void RSSI_MODEL_Initialize() { rssi_modelData.state = RSSI_MODEL_INIT; }
 
 void RSSI_MODEL_Tasks() {
   switch (rssi_modelData.state) {
-    case RSSI_MODEL_INIT: {
-      rssi_modelData.state = RSSI_MODEL_RECEIVE;
-      rssi_modelData.beginning = std::chrono::system_clock::now();
-      rssi_modelData.total_num = 0;
-      rssi_modelData.rate_per_min = 0.0;
-    } break;
-  case RSSI_MODEL_RECEIVE: {                                                 
-    auto receivedData = rssi_modelData.input_queue.dequeue();                
-                                                                                
+  case RSSI_MODEL_INIT: {
+    rssi_modelData.state = RSSI_MODEL_RECEIVE;
+    rssi_modelData.beginning = std::chrono::system_clock::now();
+    rssi_modelData.total_num = 0;
+    rssi_modelData.rate_per_min = 0.0;
+  } break;
+  case RSSI_MODEL_RECEIVE: {
+    auto receivedData = rssi_modelData.input_queue.dequeue();
+
     {
       std::lock_guard<std::mutex> guard(rssi_modelData.data_mutex);
       if (rssi_modelData.data_vec.size() == 50) {
-        rssi_modelData.data_vec.erase(rssi_modelData.data_vec.begin());   
+        rssi_modelData.data_vec.erase(rssi_modelData.data_vec.begin());
       }
       rssi_modelData.data_vec.push_back(receivedData);
       rssi_modelData.total_num++;
@@ -65,4 +63,3 @@ void rssi_model_thread_run() {
     RSSI_MODEL_Tasks();
   }
 }
-

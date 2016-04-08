@@ -45,7 +45,8 @@ void ERRORCHECK_MODEL_Tasks() {
     {
       std::lock_guard<std::mutex> guard(errorcheck_modelData.data_mutex);
       if (errorcheck_modelData.data_vec.size() == 50) {
-        errorcheck_modelData.data_vec.erase(errorcheck_modelData.data_vec.begin());
+        errorcheck_modelData.data_vec.erase(
+            errorcheck_modelData.data_vec.begin());
       }
       errorcheck_modelData.data_vec.push_back(receivedData);
       errorcheck_modelData.total_num++;

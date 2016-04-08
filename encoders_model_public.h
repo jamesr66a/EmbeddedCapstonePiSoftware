@@ -1,5 +1,5 @@
 #ifndef _ENCODERS_MODEL_PUBLIC_H_
-#define _ENCODERS_MODEL_PUBLIC_H_ 
+#define _ENCODERS_MODEL_PUBLIC_H_
 
 #include "generated/DebugInfo.pbo.h"
 

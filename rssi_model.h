@@ -1,5 +1,5 @@
 #ifndef _RSSI_MODEL_H_
-#define _RSSI_MODEL_H_ 
+#define _RSSI_MODEL_H_
 
 #include "generated/DebugInfo.pbo.h"
 #include "SafeQueue.h"

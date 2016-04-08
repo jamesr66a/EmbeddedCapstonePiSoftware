@@ -1,5 +1,5 @@
 #ifndef _SENSORS_MODEL_PUBLIC_H_
-#define _SENSORS_MODEL_PUBLIC_H_ 
+#define _SENSORS_MODEL_PUBLIC_H_
 
 #include "generated/DebugInfo.pbo.h"
 

@@ -1,5 +1,5 @@
 #ifndef _WEBSERVER_MODEL_H_
-#define _WEBSERVER_MODEL_H_ 
+#define _WEBSERVER_MODEL_H_
 
 #include "generated/DebugInfo.pbo.h"
 #include "generated/WiFlyStringWireFormat.pbo.h"
@@ -22,9 +22,9 @@ typedef struct {
   SafeQueue<DebugInfo> input_queue;
 
   std::mutex data_mutex;
-  std::vector<DebugInfo> data_vec;  
+  std::vector<DebugInfo> data_vec;
   int total_num;
-  float rate_per_min; 
+  float rate_per_min;
 
   std::chrono::system_clock::time_point beginning;
 } WEBSERVER_MODEL_DATA;

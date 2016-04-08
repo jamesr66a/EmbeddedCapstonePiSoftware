@@ -10,5 +10,5 @@ int rssi_debug_info_rate_per_minute();
 
 void sendToRSSIModelQueue(DebugInfo *info);
 std::vector<DebugInfo> rssi_aggregate_info_vector();
- 
+
 #endif /* _RSSI_MODEL_PUBLIC_H_ */
