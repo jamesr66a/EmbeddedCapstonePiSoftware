@@ -1,11 +1,14 @@
 #include "webserver_model.h"
 #include "webserver_view.h"
 
+#include "encoders_model_public.h"
+#include "errorcheck_model_public.h"
 #include "motor_model_public.h"
 #include "pid_model_public.h"
 #include "rssi_model_public.h"
 #include "sensors_model_public.h"
 #include "uart_transmitter_public.h"
+#include "warning_model_public.h"
 
 #include <cppcms/application.h>
 #include <cppcms/applications_pool.h>
@@ -16,18 +19,23 @@
 
 std::string task_names[] = { "Sensor 1", "RSSI Data Collector", "Encoder 1",
                              "Encoder 2", "Rover Pose Calculator",
-                             "PID Controller", "Motor 1", "Motor 2" };
+                             "PID Controller", "Motor 1", "Motor 2", "UART RX",
+                             "UART TX", "Proto Messages", "ErrorCheck" };
 
-std::vector<std::string> event_names[8] = {
+std::vector<std::string> event_names[] = {
   { "Receive", "Send", "Left Sensor Value", "Right Sensor Value",
-    "Center Sensor Value" },
-  { "Receive" },
-  { "Receive", "Left Count", "Right Count" },
-  { "Receive" },
-  { "Receive" },
-  { "Receive", "PID Compensation Recalculated" },
-  { "Receive", "Command Duty Cycle Set", "PID Duty Cycle Set" },
-  { "Receive" },
+    "Center Sensor Value" },                              // sensor 1
+  { "Receive", "Buffer Overrun", "Total Messages Rxed" }, // RSSI Collector
+  { "Receive", "Left Count", "Right Count" },             // Encoder 1
+  { "Receive" },                                          // Encoder 2
+  { "Receive" },                                          // Rover Pose
+  { "Receive", "PID Compensation Recalculated" },         // PID Controller
+  { "Receive", "Command Duty Cycle Set", "PID Duty Cycle Set" }, // Motor 1
+  { "Receive" },                                                 // Motor 2
+  {},                                                            // UART RX
+  {},                                                            // UART TX
+  {}, // Proto messages
+  {}  // ErrorCheck
 };
 
 enum MOTOR1DIRECTION {
@@ -217,5 +225,72 @@ void webserver_view::main(std::string url) {
                           (char *)&var.data.motorMessage, 0);
     sendToUartQueue(&var);
     render("rover_control_view", c);
+  } else if (url == "/errorcheck") {
+    auto number = std::to_string(errorcheck_aggregate_debug_info_count());
+    auto rate = std::to_string(errorcheck_debug_info_rate_per_minute());
+    auto vec = errorcheck_aggregate_info_vector();
+
+    c.num_messages = number;
+    c.data_rate = rate;
+    c.message_list =
+        "<div class = \"container\"><table class = \"table table-striped\">";
+    c.message_list += "<thead><tr><th>Timestamp "
+                      "(cycles)</th><th>Task</th><th>Line "
+                      "Number</th></tr></thead><tbody>";
+    for (auto itr = vec.rbegin(); itr != vec.rend(); itr++) {
+      auto &x = *itr;
+      c.message_list +=
+          "<tr><td>" + std::to_string((uint32_t)DebugInfo_cpuTicks(&x)) +
+          "<td>" + task_names[DebugInfo_debugID(&x)] + "</td><td>" +
+          std::to_string(DebugInfo_data(&x)) + "</td></tr>";
+    }
+    c.message_list += "</tbody></table></div>";
+
+    render("message", c);
+  } else if (url == "/warnings") {
+    auto number = std::to_string(warning_aggregate_debug_info_count());
+    auto rate = std::to_string(warning_debug_info_rate_per_minute());
+    auto vec = warning_aggregate_info_vector();
+
+    c.num_messages = number;
+    c.data_rate = rate;
+    c.message_list =
+        "<div class = \"container\"><table class = \"table table-striped\">";
+    c.message_list += "<thead><tr><th>Timestamp "
+                      "(cycles)</th><th>Task</th><th>Line "
+                      "Number</th></tr></thead><tbody>";
+    for (auto itr = vec.rbegin(); itr != vec.rend(); itr++) {
+      auto &x = *itr;
+      c.message_list +=
+          "<tr><td>" + std::to_string((uint32_t)DebugInfo_cpuTicks(&x)) +
+          "<td>" + task_names[DebugInfo_debugID(&x)] + "</td><td>" +
+          std::to_string(DebugInfo_data(&x)) + "</td></tr>";
+    }
+    c.message_list += "</tbody></table></div>";
+
+    render("message", c);
+  } else if (url == "/encoders") {
+    auto number = std::to_string(encoders_aggregate_debug_info_count());
+    auto rate = std::to_string(encoders_debug_info_rate_per_minute());
+    auto vec = encoders_aggregate_info_vector();
+
+    c.num_messages = number;
+    c.data_rate = rate;
+    c.message_list =
+        "<div class = \"container\"><table class = \"table table-striped\">";
+    c.message_list +=
+        "<thead><tr><th>Timestamp (cycles)</th><th>Task</th><th>Event "
+        "ID</th><th>Data</th></tr></thead><tbody>";
+    for (auto itr = vec.rbegin(); itr != vec.rend(); itr++) {
+      auto &x = *itr;
+      c.message_list +=
+          "<tr><td>" + std::to_string((uint32_t)DebugInfo_cpuTicks(&x)) +
+          "<td>" + task_names[DebugInfo_identifier(&x)] + "</td><td>" +
+          event_names[DebugInfo_identifier(&x)][DebugInfo_debugID(&x)] +
+          "</td><td>" + std::to_string(DebugInfo_data(&x)) + "</td></tr>";
+    }
+    c.message_list += "</tbody></table></div>";
+
+    render("message", c);
   }
 }

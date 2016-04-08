@@ -6,7 +6,7 @@ CXX=g++
 CFLAGS=-g -Wall -Werror -Wno-unused-function
 CXXFLAGS=-g -Wall -Werror -Wno-unused-function
 
-main: main.cpp uart_receiver debug uart_transmitter serial webserver_model webserver_view RSSIVectorConstructor RoverPose sensors_model rssi_model pid_model MotorCommand 
+main: main.cpp uart_receiver debug uart_transmitter serial webserver_model webserver_view RSSIVectorConstructor RoverPose sensors_model rssi_model pid_model MotorCommand errorcheck_model warning_model encoders_model 
 	$(CXX) $(CXXFLAGS) -std=c++11 main.cpp build/*.o -o main -pthread -lcppcms -lbooster
 
 test: RSSIVectorConstructor_test
@@ -74,6 +74,15 @@ pid_model: generated/DebugInfo.pbo.h pid_model.h pid_model.cpp
 
 motor_model: generated/DebugInfo.pbo.h motor_model.h motor_model.cpp
 	$(CXX) $(CXXFLAGS) -c -std=c++11 motor_model.cpp -o build/motor_model.o
+
+errorcheck_model: generated/DebugInfo.pbo.h errorcheck_model.h errorcheck_model.cpp
+	$(CXX) $(CXXFLAGS) -c -std=c++11 errorcheck_model.cpp -o build/errorcheck_model.o
+
+warning_model: generated/DebugInfo.pbo.h warning_model.h warning_model.cpp
+	$(CXX) $(CXXFLAGS) -c -std=c++11 warning_model.cpp -o build/warning_model.o
+
+encoders_model: generated/DebugInfo.pbo.h encoders_model.h encoders_model.cpp
+	$(CXX) $(CXXFLAGS) -c -std=c++11 encoders_model.cpp -o build/encoders_model.o
 
 proboc_generate:
 	cd generated && ./make.sh && cd ..

@@ -10,6 +10,8 @@
 #include <unistd.h>
 
 #include "debug.h"
+#include "encoders_model.h"
+#include "errorcheck_model.h"
 #include "motor_model.h"
 #include "pid_model.h"
 #include "rssi_model.h"
@@ -17,6 +19,7 @@
 #include "sensors_model.h"
 #include "uart_receiver.h"
 #include "uart_transmitter.h"
+#include "warning_model.h"
 #include "webserver_model.h"
 #include "webserver_view.h"
 
@@ -60,6 +63,9 @@ int main(int argc, char **argv) {
   std::thread rssi_model(rssi_model_thread_run);
   std::thread pid_model(pid_model_thread_run);
   std::thread motor_model(motor_model_thread_run);
+  std::thread errorcheck_model(errorcheck_model_thread_run);
+  std::thread warning_model(warning_model_thread_run);
+  std::thread encoders_model(encoders_model_thread_run);
   srv->run();
   uart_receiver.join();
   uart_transmitter.join();
@@ -68,4 +74,7 @@ int main(int argc, char **argv) {
   rssi_model.join();
   pid_model.join();
   motor_model.join();
+  errorcheck_model.join();
+  warning_model.join();
+  encoders_model.join();
 }

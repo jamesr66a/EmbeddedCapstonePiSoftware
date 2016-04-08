@@ -1,5 +1,7 @@
 #include "debug.h"
 #include "debuginfo.h"
+#include "encoders_model_public.h"
+#include "errorcheck_model_public.h"
 #include "generated/DebugInfo.pbo.h"
 #include "motor_model_public.h"
 #include "pid_model_public.h"
@@ -7,6 +9,7 @@
 #include "sensors_model_public.h"
 #include "serial.h"
 #include "uart_receiver.h"
+#include "warning_model_public.h"
 #include "webserver_model.h"
 
 #include <iostream>
@@ -138,7 +141,10 @@ void UART_RECEIVER_Tasks(void) {
                 << " " << DebugInfo_debugID(&received_obj) << " "
                 << DebugInfo_data(&received_obj) << " sequence number: " << seq
                 << "\n";*/
-      sendToWebserverModelQueue(&received_obj);
+      if (DebugInfo_identifier(&received_obj) != ERRORCHECK_IDENTIFIER &&
+          DebugInfo_identifier(&received_obj) != WARNING_IDENTIFIER) {
+        sendToWebserverModelQueue(&received_obj);
+      }
 
       if (DebugInfo_identifier(&received_obj) == SENSOR1_IDENTIFIER) {
         sendToSensorsModelQueue(&received_obj);
@@ -151,6 +157,15 @@ void UART_RECEIVER_Tasks(void) {
       }
       if (DebugInfo_identifier(&received_obj) == MOTOR1_IDENTIFIER) {
         sendToMOTORModelQueue(&received_obj);
+      }
+      if (DebugInfo_identifier(&received_obj) == ERRORCHECK_IDENTIFIER) {
+        sendToErrorCheckModelQueue(&received_obj);
+      }
+      if (DebugInfo_identifier(&received_obj) == WARNING_IDENTIFIER) {
+        sendToWarningModelQueue(&received_obj);
+      }
+      if (DebugInfo_identifier(&received_obj) == ENCODER1_IDENTIFIER) {
+        sendToEncodersModelQueue(&received_obj);
       }
     }
   } break;
