@@ -3,6 +3,7 @@
 #include <cppcms/service.h>
 #include <cppcms/http_response.h>
 #include <fcntl.h>
+#include <glog/logging.h>
 #include <iostream>
 #include <memory>
 #include <termios.h>
@@ -28,6 +29,11 @@ int main(int argc, char **argv) {
     std::cerr << "USAGE: main uart_filename\n";
     return -1;
   }
+
+  google::InitGoogleLogging(argv[0]);
+
+  FLAGS_log_dir="./logs";
+  LOG(INFO) << "test";
 
   // Initialize receive device file
   int fd = open(argv[1], O_RDWR | O_NOCTTY | O_SYNC);

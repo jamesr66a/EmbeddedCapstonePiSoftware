@@ -20,7 +20,8 @@
 std::string task_names[] = { "Sensor 1", "RSSI Data Collector", "Encoder 1",
                              "Encoder 2", "Rover Pose Calculator",
                              "PID Controller", "Motor 1", "Motor 2", "UART RX",
-                             "UART TX", "Proto Messages", "ErrorCheck" };
+                             "UART TX", "Proto Messages", "ErrorCheck",
+                             "Warnings", "Pose Calculator" };
 
 std::vector<std::string> event_names[] = {
   { "Receive", "Send", "Left Sensor Value", "Right Sensor Value",
@@ -35,7 +36,9 @@ std::vector<std::string> event_names[] = {
   {},                                                            // UART RX
   {},                                                            // UART TX
   {}, // Proto messages
-  {}  // ErrorCheck
+  {}, // ErrorCheck
+  {}, // Warnings
+  { "X updated", "Y updated", "Yaw Updated" }
 };
 
 enum MOTOR1DIRECTION {
@@ -67,11 +70,16 @@ void webserver_view::main(std::string url) {
         "ID</th><th>Data</th></tr></thead><tbody>";
     for (auto itr = vec.rbegin(); itr != vec.rend(); itr++) {
       auto &x = *itr;
-      c.message_list +=
-          "<tr><td>" + std::to_string((uint32_t)DebugInfo_cpuTicks(&x)) +
-          "<td>" + task_names[DebugInfo_identifier(&x)] + "</td><td>" +
-          event_names[DebugInfo_identifier(&x)][DebugInfo_debugID(&x)] +
-          "</td><td>" + std::to_string(DebugInfo_data(&x)) + "</td></tr>";
+      c.message_list += "<tr><td>";
+      c.message_list += std::to_string((uint32_t)DebugInfo_cpuTicks(&x));
+      c.message_list += "<td>";
+      c.message_list += std::string(task_names[DebugInfo_identifier(&x)]);
+      c.message_list += "</td><td>";
+      c.message_list += std::string(
+          event_names[DebugInfo_identifier(&x)][DebugInfo_debugID(&x)]);
+      c.message_list += "</td><td>";
+      c.message_list += std::to_string(DebugInfo_data(&x));
+      c.message_list += "</td></tr>";
     }
     c.message_list += "</tbody></table></div>";
 
