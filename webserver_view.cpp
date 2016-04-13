@@ -5,6 +5,7 @@
 #include "errorcheck_model_public.h"
 #include "motor_model_public.h"
 #include "pid_model_public.h"
+#include "pose_model_public.h"
 #include "rssi_model_public.h"
 #include "sensors_model_public.h"
 #include "uart_transmitter_public.h"
@@ -281,6 +282,29 @@ void webserver_view::main(std::string url) {
     auto number = std::to_string(encoders_aggregate_debug_info_count());
     auto rate = std::to_string(encoders_debug_info_rate_per_minute());
     auto vec = encoders_aggregate_info_vector();
+
+    c.num_messages = number;
+    c.data_rate = rate;
+    c.message_list =
+        "<div class = \"container\"><table class = \"table table-striped\">";
+    c.message_list +=
+        "<thead><tr><th>Timestamp (cycles)</th><th>Task</th><th>Event "
+        "ID</th><th>Data</th></tr></thead><tbody>";
+    for (auto itr = vec.rbegin(); itr != vec.rend(); itr++) {
+      auto &x = *itr;
+      c.message_list +=
+          "<tr><td>" + std::to_string((uint32_t)DebugInfo_cpuTicks(&x)) +
+          "<td>" + task_names[DebugInfo_identifier(&x)] + "</td><td>" +
+          event_names[DebugInfo_identifier(&x)][DebugInfo_debugID(&x)] +
+          "</td><td>" + std::to_string(DebugInfo_data(&x)) + "</td></tr>";
+    }
+    c.message_list += "</tbody></table></div>";
+
+    render("message", c);
+  } else if (url == "/pose") {
+    auto number = std::to_string(pose_aggregate_debug_info_count());
+    auto rate = std::to_string(pose_debug_info_rate_per_minute());
+    auto vec = pose_aggregate_info_vector();
 
     c.num_messages = number;
     c.data_rate = rate;

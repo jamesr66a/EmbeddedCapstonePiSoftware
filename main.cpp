@@ -15,6 +15,7 @@
 #include "errorcheck_model.h"
 #include "motor_model.h"
 #include "pid_model.h"
+#include "pose_model.h"
 #include "rssi_model.h"
 #include "serial.h"
 #include "sensors_model.h"
@@ -72,6 +73,7 @@ int main(int argc, char **argv) {
   std::thread errorcheck_model(errorcheck_model_thread_run);
   std::thread warning_model(warning_model_thread_run);
   std::thread encoders_model(encoders_model_thread_run);
+  std::thread pose_model(pose_model_thread_run);
   srv->run();
   uart_receiver.join();
   uart_transmitter.join();
@@ -83,4 +85,5 @@ int main(int argc, char **argv) {
   errorcheck_model.join();
   warning_model.join();
   encoders_model.join();
+  pose_model.join();
 }

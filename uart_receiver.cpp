@@ -4,6 +4,7 @@
 #include "errorcheck_model_public.h"
 #include "generated/DebugInfo.pbo.h"
 #include "motor_model_public.h"
+#include "pose_model_public.h"
 #include "pid_model_public.h"
 #include "rssi_model_public.h"
 #include "sensors_model_public.h"
@@ -166,6 +167,9 @@ void UART_RECEIVER_Tasks(void) {
       }
       if (DebugInfo_identifier(&received_obj) == ENCODER1_IDENTIFIER) {
         sendToEncodersModelQueue(&received_obj);
+      }
+      if (DebugInfo_identifier(&received_obj) == POSE_IDENTIFIER) {
+        sendToPoseModelQueue(&received_obj);
       }
     }
   } break;
