@@ -6,13 +6,15 @@ extern "C" {
 #endif
 
 #include "generated/MotorCommand.pbo.h"
+#include "generated/RoverPose.pbo.h"
 #include "generated/UartRxData.pbo.h"
 #include "generated/WiFlyStringWireFormat.pbo.h"
 
 typedef enum {
   UART_RX_DATA_TX,
   STRING_TX,
-  MOTOR_MESSAGE_TX
+  MOTOR_MESSAGE_TX,
+  CONTROL_CMD
 } UART_TRANSMITTER_VARIANT_TYPE;
 
 struct __attribute__((packed)) UART_TRANSMITTER_VARIANT {
@@ -20,6 +22,7 @@ struct __attribute__((packed)) UART_TRANSMITTER_VARIANT {
     UartRxData rx_data;
     WiFlyStringWireFormat string;
     MotorCommand motorMessage;
+    RoverPose controlCmd;
   } data;
   UART_TRANSMITTER_VARIANT_TYPE type;
 };

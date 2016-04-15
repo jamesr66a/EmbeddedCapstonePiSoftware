@@ -22,7 +22,7 @@ std::string task_names[] = { "Sensor 1", "RSSI Data Collector", "Encoder 1",
                              "Encoder 2", "Rover Pose Calculator",
                              "PID Controller", "Motor 1", "Motor 2", "UART RX",
                              "UART TX", "Proto Messages", "ErrorCheck",
-                             "Warnings", "Pose Calculator" };
+                             "Warnings", "Pose Calculator", "Control Task" };
 
 std::vector<std::string> event_names[] = {
   { "Receive", "Send", "Left Sensor Value", "Right Sensor Value",
@@ -39,7 +39,8 @@ std::vector<std::string> event_names[] = {
   {}, // Proto messages
   {}, // ErrorCheck
   {}, // Warnings
-  { "X updated", "Y updated", "Yaw Updated" }
+  { "X updated", "Y updated", "Yaw Updated" },
+  {}
 };
 
 enum MOTOR1DIRECTION {
