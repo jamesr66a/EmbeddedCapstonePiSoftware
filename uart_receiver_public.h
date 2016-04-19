@@ -1,18 +1,32 @@
 #ifndef _UART_RECEIVER_PUBLIC_H_
 #define _UART_RECEIVER_PUBLIC_H_
 
-#include "generated/UartRxData.pbo.h"
-#include "generated/WiFlyStringWireFormat.pbo.h"
+#include "generated/RoverPose.pbo.h"
+#include "generated/RSSIData.pbo.h"
 #include "SafeQueue.h"
 
-typedef enum { UART_RX_DATA, STRING } UART_RECEIVER_VARIANT_TYPE;
+typedef enum { DEBUG_INFO, TEST_CHAR, RSSI_PAIR } UART_RECEIVER_VARIANT_TYPE;
 
-struct UART_RECEIVER_VARIANT {
+struct __attribute__((packed)) PosePositionPair {
+  RoverPose pose;
+  RSSIData rssi;
+};
+
+struct __attribute__((packed)) UART_RECEIVER_VARIANT {
   union {
-    UartRxData rx_data;
-    WiFlyStringWireFormat string;
+    DebugInfo debug_info;
+    uint8_t test_char;
+    struct PosePositionPair rssi_pair;
   } data;
-  UART_RECEIVER_VARIANT_TYPE type;
+  uint8_t type;
+};
+
+struct __attribute__((packed)) UART_RECEIVER_VARIANT_WIRE {
+  union {
+    DebugInfo debug_info;
+    uint8_t test_char;
+  } data;
+  uint8_t type;
 };
 
 typedef int (*uart_receiver_callback_t)(struct UART_RECEIVER_VARIANT *);

@@ -47,6 +47,7 @@ static uint8_t receive_and_unpack() {
   if (EOF != read(uart_receiverData.receive_fd, &data, 1)) {
     return data;
   } else {
+    std::cout << "EOF\n";
     errorCheck();
     return -1;
   }
@@ -92,11 +93,30 @@ void UART_RECEIVER_Tasks(void) {
   case UART_RECEIVER_FRAME_START_4: {
     if (receive_and_unpack() == frameSequence[3]) {
       // Set our receive index to 0 so we receive a brand new message.
-      uart_receiverData.receive_buf_idx = 0;
-      uart_receiverData.state = UART_RECEIVER_STATE_RECEIVE;
+      uart_receiverData.state = UART_RECEIVER_FRAME_SWITCH;
     } else {
       uart_receiverData.state = UART_RECEIVER_FRAME_START_1;
     }
+  } break;
+
+  case UART_RECEIVER_FRAME_SWITCH: {
+    uint8_t rxed_byte = receive_and_unpack();
+    switch (rxed_byte) {
+    case 0:
+      uart_receiverData.msg_type = 0;
+      uart_receiverData.rx_size = sizeof(struct UART_RECEIVER_VARIANT);
+      break;
+    case 1:
+      uart_receiverData.msg_type = 1;
+      uart_receiverData.rx_size = sizeof(struct UART_RECEIVER_VARIANT_WIRE);
+      break;
+    default:
+      std::cout << "rxed_byte: " << rxed_byte << std::endl;
+      uart_receiverData.state = UART_RECEIVER_FRAME_START_1;
+      return;
+    }
+    uart_receiverData.receive_buf_idx = 0;
+    uart_receiverData.state = UART_RECEIVER_STATE_RECEIVE;
   } break;
 
   // We've made it through the frame delimiter sequence. Receive a full message.
@@ -107,69 +127,88 @@ void UART_RECEIVER_Tasks(void) {
 
     // If we've received the correct number of bytes for a message, parse the
     // message.
-    if (uart_receiverData.receive_buf_idx == sizeof(DebugInfo)) {
-      // Proto object we're parsing into
-      DebugInfo received_obj;
+    if (uart_receiverData.receive_buf_idx == uart_receiverData.rx_size) {
+      if (uart_receiverData.msg_type == 0) {
+        struct UART_RECEIVER_VARIANT var;
+        uint32_t a;
+        if (RSSIData_from_bytes(&var.data.rssi_pair.rssi,
+                                (char *)uart_receiverData.receive_buf, &a)) {
+          char buf[100];
+          RSSIData_bssid(&var.data.rssi_pair.rssi, buf, sizeof(buf));
+          std::cout << "Received RSSI Pair\n"
+                    << RoverPose_xPosition(&var.data.rssi_pair.pose) << " "
+                    << RoverPose_yPosition(&var.data.rssi_pair.pose) << " "
+                    << RoverPose_yaw(&var.data.rssi_pair.pose) << "\n" << buf
+                    << " " << RSSIData_rssi(&var.data.rssi_pair.rssi);
+        }
 
-      // Sequence number
-      uint32_t seq;
-      static uint32_t seq_expected;
-
-      // Parse from bytes. Also does a hash integrity check
-      if (!DebugInfo_from_bytes(&received_obj, uart_receiverData.receive_buf,
-                                &seq)) {
-        // If we fail our integrity check, fail.
-        // TODO: notify
-        std::cerr << "Hash check failed" << std::endl;
-        uart_receiverData.state = UART_RECEIVER_FRAME_START_1;
-        seq_expected++;
-        return;
-      }
-
-      if (seq != seq_expected) {
-        std::cerr << "Missing sequence number. Expected: " << seq_expected
-                  << " Got: " << seq << "\n";
-        seq_expected = seq + 1;
       } else {
-        seq_expected++;
-      }
+        struct UART_RECEIVER_VARIANT_WIRE var;
+        memcpy(&var, uart_receiverData.receive_buf,
+               sizeof(struct UART_RECEIVER_VARIANT));
+        switch (var.type) {
+        case DEBUG_INFO: {
+          // Proto object we're parsing into
+          DebugInfo received_obj;
 
-      // Switch back to receiving the first byte of the frame delimiter word.
-      uart_receiverData.state = UART_RECEIVER_FRAME_START_1;
+          // Sequence number
+          uint32_t seq;
+          static uint32_t seq_expected;
 
-      /*std::cout << "DebugInfo Received: " <<
-         DebugInfo_identifier(&received_obj)
-                << " " << DebugInfo_debugID(&received_obj) << " "
-                << DebugInfo_data(&received_obj) << " sequence number: " << seq
-                << "\n";*/
-      if (DebugInfo_identifier(&received_obj) != ERRORCHECK_IDENTIFIER &&
-          DebugInfo_identifier(&received_obj) != WARNING_IDENTIFIER) {
-        sendToWebserverModelQueue(&received_obj);
-      }
+          // Parse from bytes. Also does a hash integrity check
+          if (!DebugInfo_from_bytes(&received_obj, (char *)&var.data.debug_info,
+                                    &seq)) {
+            // If we fail our integrity check, fail.
+            // TODO: notify
+            std::cerr << "Hash check failed" << std::endl;
+            uart_receiverData.state = UART_RECEIVER_FRAME_START_1;
+            seq_expected++;
+            return;
+          }
 
-      if (DebugInfo_identifier(&received_obj) == SENSOR1_IDENTIFIER) {
-        sendToSensorsModelQueue(&received_obj);
-      }
-      if (DebugInfo_identifier(&received_obj) == RSSI_COLLECTOR_IDENTIFIER) {
-        sendToRSSIModelQueue(&received_obj);
-      }
-      if (DebugInfo_identifier(&received_obj) == PID_IDENTIFIER) {
-        sendToPIDModelQueue(&received_obj);
-      }
-      if (DebugInfo_identifier(&received_obj) == MOTOR1_IDENTIFIER) {
-        sendToMOTORModelQueue(&received_obj);
-      }
-      if (DebugInfo_identifier(&received_obj) == ERRORCHECK_IDENTIFIER) {
-        sendToErrorCheckModelQueue(&received_obj);
-      }
-      if (DebugInfo_identifier(&received_obj) == WARNING_IDENTIFIER) {
-        sendToWarningModelQueue(&received_obj);
-      }
-      if (DebugInfo_identifier(&received_obj) == ENCODER1_IDENTIFIER) {
-        sendToEncodersModelQueue(&received_obj);
-      }
-      if (DebugInfo_identifier(&received_obj) == POSE_IDENTIFIER) {
-        sendToPoseModelQueue(&received_obj);
+          if (seq != seq_expected) {
+            std::cerr << "Missing sequence number. Expected: " << seq_expected
+                      << " Got: " << seq << "\n";
+            seq_expected = seq + 1;
+          } else {
+            seq_expected++;
+          }
+
+          if (DebugInfo_identifier(&received_obj) != ERRORCHECK_IDENTIFIER &&
+              DebugInfo_identifier(&received_obj) != WARNING_IDENTIFIER) {
+            sendToWebserverModelQueue(&received_obj);
+          }
+
+          if (DebugInfo_identifier(&received_obj) == SENSOR1_IDENTIFIER) {
+            sendToSensorsModelQueue(&received_obj);
+          }
+          if (DebugInfo_identifier(&received_obj) ==
+              RSSI_COLLECTOR_IDENTIFIER) {
+            sendToRSSIModelQueue(&received_obj);
+          }
+          if (DebugInfo_identifier(&received_obj) == PID_IDENTIFIER) {
+            sendToPIDModelQueue(&received_obj);
+          }
+          if (DebugInfo_identifier(&received_obj) == MOTOR1_IDENTIFIER) {
+            sendToMOTORModelQueue(&received_obj);
+          }
+          if (DebugInfo_identifier(&received_obj) == ERRORCHECK_IDENTIFIER) {
+            sendToErrorCheckModelQueue(&received_obj);
+          }
+          if (DebugInfo_identifier(&received_obj) == WARNING_IDENTIFIER) {
+            sendToWarningModelQueue(&received_obj);
+          }
+          if (DebugInfo_identifier(&received_obj) == ENCODER1_IDENTIFIER) {
+            sendToEncodersModelQueue(&received_obj);
+          }
+          if (DebugInfo_identifier(&received_obj) == POSE_IDENTIFIER) {
+            sendToPoseModelQueue(&received_obj);
+          }
+        } // case DEBUG_INFO
+        case TEST_CHAR: {
+        } break;
+        } // switch (var.type)
+        uart_receiverData.state = UART_RECEIVER_FRAME_START_1;
       }
     }
   } break;
