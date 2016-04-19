@@ -139,11 +139,10 @@ void UART_RECEIVER_Tasks(void) {
                                 (char *)&var.data.rssi_pair.rssi, &a)) {
           char buf[100];
           RSSIData_bssid(&var.data.rssi_pair.rssi, buf, sizeof(buf));
-          std::cout << "Received RSSI Pair\n"
-                    << RoverPose_xPosition(&var.data.rssi_pair.pose) << " "
+          std::cout << RoverPose_xPosition(&var.data.rssi_pair.pose) << " "
                     << RoverPose_yPosition(&var.data.rssi_pair.pose) << " "
                     << RoverPose_yaw(&var.data.rssi_pair.pose) << "\n" << buf
-                    << " " << RSSIData_rssi(&var.data.rssi_pair.rssi);
+                    << " " << RSSIData_rssi(&var.data.rssi_pair.rssi) << "\n";
         }
       } else {
         struct UART_RECEIVER_VARIANT_WIRE var;
