@@ -15,7 +15,9 @@
 #include <cppcms/applications_pool.h>
 #include <cppcms/service.h>
 #include <cppcms/http_response.h>
+#include <glog/logging.h>
 #include <iostream>
+#include <regex>
 #include <string>
 
 std::string task_names[] = { "Sensor 1", "RSSI Data Collector", "Encoder 1",
@@ -56,6 +58,8 @@ enum MOTOR1DIRECTION {
 
 void webserver_view::main(std::string url) {
   content::message c;
+
+  std::string command_prefix("/command");
 
   if (url == "/") {
 
@@ -325,5 +329,41 @@ void webserver_view::main(std::string url) {
     c.message_list += "</tbody></table></div>";
 
     render("message", c);
+  } else if (std::equal(begin(command_prefix), end(command_prefix),
+                        url.begin())) {
+    std::regex r(R"(-?\d+)");
+
+    auto str = request().query_string();
+
+    auto b = std::sregex_iterator(str.begin(), str.end(), r);
+    auto e = std::sregex_iterator();
+
+    int x = 0, y = 0;
+    size_t idx = 0;
+    auto i = b;
+    for (; i != e; i++, idx++) {
+      switch (idx) {
+      case 0:
+        x = std::stoi(i->str());
+        break;
+      case 1:
+        y = std::stoi(i->str());
+        break;
+      }
+    }
+
+    if (idx >= 2) {
+      LOG(INFO) << x << "," << y; 
+      struct UART_TRANSMITTER_VARIANT var;
+      var.type = CONTROL_CMD;
+      RoverPose_init(&var.data.controlCmd);
+      RoverPose_set_xPosition(&var.data.controlCmd, x);
+      RoverPose_set_yPosition(&var.data.controlCmd, y);
+      RoverPose_set_yaw(&var.data.controlCmd, 0);
+      RoverPose_to_bytes(&var.data.controlCmd, (char*)&var.data.controlCmd, 0);
+      sendToUartQueue(&var);
+    }
+
+    render("rover_command_view", c);
   }
 }
