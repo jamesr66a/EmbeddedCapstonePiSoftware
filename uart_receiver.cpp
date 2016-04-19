@@ -37,6 +37,8 @@ void UART_RECEIVER_Initialize(int fd) {
   uart_receiverData.uart_receiver_callbacks_idx = 0;
 
   uart_receiverData.receive_fd = fd;
+  uart_receiverData.rx_size = 0;
+  uart_receiverData.msg_type = 0;
 }
 
 // Consume a message from the receive queue and unpack it as a char.
@@ -128,11 +130,13 @@ void UART_RECEIVER_Tasks(void) {
     // If we've received the correct number of bytes for a message, parse the
     // message.
     if (uart_receiverData.receive_buf_idx == uart_receiverData.rx_size) {
+      uart_receiverData.state = UART_RECEIVER_FRAME_START_1;
       if (uart_receiverData.msg_type == 0) {
         struct UART_RECEIVER_VARIANT var;
+        memcpy(&var, uart_receiverData.receive_buf, sizeof(var));
         uint32_t a;
         if (RSSIData_from_bytes(&var.data.rssi_pair.rssi,
-                                (char *)uart_receiverData.receive_buf, &a)) {
+                                (char *)&var.data.rssi_pair.rssi, &a)) {
           char buf[100];
           RSSIData_bssid(&var.data.rssi_pair.rssi, buf, sizeof(buf));
           std::cout << "Received RSSI Pair\n"
@@ -141,11 +145,10 @@ void UART_RECEIVER_Tasks(void) {
                     << RoverPose_yaw(&var.data.rssi_pair.pose) << "\n" << buf
                     << " " << RSSIData_rssi(&var.data.rssi_pair.rssi);
         }
-
       } else {
         struct UART_RECEIVER_VARIANT_WIRE var;
         memcpy(&var, uart_receiverData.receive_buf,
-               sizeof(struct UART_RECEIVER_VARIANT));
+               sizeof(struct UART_RECEIVER_VARIANT_WIRE));
         switch (var.type) {
         case DEBUG_INFO: {
           // Proto object we're parsing into
@@ -161,7 +164,6 @@ void UART_RECEIVER_Tasks(void) {
             // If we fail our integrity check, fail.
             // TODO: notify
             std::cerr << "Hash check failed" << std::endl;
-            uart_receiverData.state = UART_RECEIVER_FRAME_START_1;
             seq_expected++;
             return;
           }
@@ -208,7 +210,6 @@ void UART_RECEIVER_Tasks(void) {
         case TEST_CHAR: {
         } break;
         } // switch (var.type)
-        uart_receiverData.state = UART_RECEIVER_FRAME_START_1;
       }
     }
   } break;

@@ -34,10 +34,10 @@ typedef struct {
 
   // Receive buffer members
   size_t receive_buf_idx;
-  char receive_buf[sizeof(struct UART_RECEIVER_VARIANT)+5];
-
   size_t rx_size;
   uint8_t msg_type;
+
+  char receive_buf[sizeof(struct UART_RECEIVER_VARIANT)];
 } UART_RECEIVER_DATA;
 
 void UART_RECEIVER_Initialize(int fd);
