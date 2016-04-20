@@ -60,6 +60,7 @@ void webserver_view::main(std::string url) {
   content::message c;
 
   std::string command_prefix("/command");
+  std::string poseset_prefix("/poseset");
 
   if (url == "/") {
 
@@ -353,14 +354,53 @@ void webserver_view::main(std::string url) {
     }
 
     if (idx >= 2) {
-      LOG(INFO) << x << "," << y; 
+      LOG(INFO) << x << "," << y;
       struct UART_TRANSMITTER_VARIANT var;
       var.type = CONTROL_CMD;
       RoverPose_init(&var.data.controlCmd);
       RoverPose_set_xPosition(&var.data.controlCmd, x);
       RoverPose_set_yPosition(&var.data.controlCmd, y);
       RoverPose_set_yaw(&var.data.controlCmd, 0);
-      RoverPose_to_bytes(&var.data.controlCmd, (char*)&var.data.controlCmd, 0);
+      RoverPose_to_bytes(&var.data.controlCmd, (char *)&var.data.controlCmd, 0);
+      sendToUartQueue(&var);
+    }
+
+    render("rover_command_view", c);
+  } else if (std::equal(begin(poseset_prefix), end(poseset_prefix),
+                        url.begin())) {
+    std::regex r(R"(-?\d+)");
+
+    auto str = request().query_string();
+
+    auto b = std::sregex_iterator(str.begin(), str.end(), r);
+    auto e = std::sregex_iterator();
+
+    int x = 0, y = 0, yaw = 0;
+    size_t idx = 0;
+    auto i = b;
+    for (; i != e; i++, idx++) {
+      switch (idx) {
+      case 0:
+        x = std::stoi(i->str());
+        break;
+      case 1:
+        y = std::stoi(i->str());
+        break;
+      case 2:
+        yaw = std::stoi(i->str());
+        break;
+      }
+    }
+
+    if (idx >= 3) {
+      struct UART_TRANSMITTER_VARIANT var;
+      var.type = POSE_OVERRIDE;
+      RoverPose_init(&var.data.poseOverride);
+      RoverPose_set_xPosition(&var.data.poseOverride, x);
+      RoverPose_set_yPosition(&var.data.poseOverride, y);
+      RoverPose_set_yaw(&var.data.poseOverride, yaw);
+      RoverPose_to_bytes(&var.data.poseOverride, (char *)&var.data.poseOverride,
+                         0);
       sendToUartQueue(&var);
     }
 

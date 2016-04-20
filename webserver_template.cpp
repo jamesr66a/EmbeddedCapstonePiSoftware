@@ -182,7 +182,7 @@ namespace webserver_template {
 		}
 		#line 124 "webserver_view.tmpl"
 		virtual void render() {
-			#line 183 "webserver_view.tmpl"
+			#line 191 "webserver_view.tmpl"
 			out()<<"\n"
 				"<!DOCTYPE html>\n"
 				"<html lang=\"en\">\n"
@@ -228,12 +228,20 @@ namespace webserver_template {
 				"        </div>\n"
 				"      </div>\n"
 				"    </nav>    \n"
-				"    <center>                                           \n"
+				"    <center>\n"
+				"      <h1>Command Mode</h1>\n"
 				"      <form action=\"/command\" method=\"GET\">\n"
-				"        <b>X: </b><input type=number\" name=\"x\" value=\"0\" /><br />                   \n"
+				"        <b>X: </b><input type=\"number\" name=\"x\" value=\"0\" /><br />                   \n"
 				"        <b>Y: </b><input type=\"number\" name=\"y\" value=\"0\" /><br />\n"
 				"        <input type=\"submit\" />\n"
-				"      </form>\n"
+				"      </form><br /><br /><br />\n"
+				"        <h1>Pose Override</h1>\n"
+				"        <form action=\"/poseset\" method=\"GET\">\n"
+				"          <b>X: </b><input type=\"number\" name=\"x\" value=\"0\" /><br />\n"
+				"          <b>Y: </b><input type=\"number\" name=\"y\" value=\"0\" /><br />\n"
+				"          <b>Yaw: </b><input type=\"number\" name=\"yaw\" value=\"0\" /><br />\n"
+				"          <input type=\"submit\" />\n"
+				"        </form>\n"
 				"    </center> \n"
 				"\n"
 				"    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->\n"
@@ -243,35 +251,35 @@ namespace webserver_template {
 				"  </body>\n"
 				"</html>\n"
 				"";
-		#line 183 "webserver_view.tmpl"
+		#line 191 "webserver_view.tmpl"
 		} // end of template render
-	#line 184 "webserver_view.tmpl"
+	#line 192 "webserver_view.tmpl"
 	}; // end of class rover_command_view
-#line 186 "webserver_view.tmpl"
+#line 194 "webserver_view.tmpl"
 } // end of namespace webserver_template
-#line 187 "webserver_view.tmpl"
+#line 195 "webserver_view.tmpl"
 namespace {
-#line 187 "webserver_view.tmpl"
+#line 195 "webserver_view.tmpl"
  cppcms::views::generator my_generator; 
-#line 187 "webserver_view.tmpl"
+#line 195 "webserver_view.tmpl"
  struct loader { 
-#line 187 "webserver_view.tmpl"
+#line 195 "webserver_view.tmpl"
   loader() { 
-#line 187 "webserver_view.tmpl"
+#line 195 "webserver_view.tmpl"
    my_generator.name("webserver_template");
-#line 187 "webserver_view.tmpl"
+#line 195 "webserver_view.tmpl"
    my_generator.add_view<webserver_template::message,content::message>("message",true);
-#line 187 "webserver_view.tmpl"
+#line 195 "webserver_view.tmpl"
    my_generator.add_view<webserver_template::rover_control_view,content::message>("rover_control_view",true);
-#line 187 "webserver_view.tmpl"
+#line 195 "webserver_view.tmpl"
    my_generator.add_view<webserver_template::rover_command_view,content::message>("rover_command_view",true);
-#line 187 "webserver_view.tmpl"
+#line 195 "webserver_view.tmpl"
     cppcms::views::pool::instance().add(my_generator);
-#line 187 "webserver_view.tmpl"
+#line 195 "webserver_view.tmpl"
  }
-#line 187 "webserver_view.tmpl"
+#line 195 "webserver_view.tmpl"
  ~loader() {  cppcms::views::pool::instance().remove(my_generator); }
-#line 187 "webserver_view.tmpl"
+#line 195 "webserver_view.tmpl"
 } a_loader;
-#line 187 "webserver_view.tmpl"
+#line 195 "webserver_view.tmpl"
 } // anon 

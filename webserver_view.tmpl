@@ -166,12 +166,20 @@
         </div>
       </div>
     </nav>    
-    <center>                                           
+    <center>
+      <h1>Command Mode</h1>
       <form action="/command" method="GET">
-        <b>X: </b><input type=number" name="x" value="0" /><br />                   
+        <b>X: </b><input type="number" name="x" value="0" /><br />                   
         <b>Y: </b><input type="number" name="y" value="0" /><br />
         <input type="submit" />
-      </form>
+      </form><br /><br /><br />
+        <h1>Pose Override</h1>
+        <form action="/poseset" method="GET">
+          <b>X: </b><input type="number" name="x" value="0" /><br />
+          <b>Y: </b><input type="number" name="y" value="0" /><br />
+          <b>Yaw: </b><input type="number" name="yaw" value="0" /><br />
+          <input type="submit" />
+        </form>
     </center> 
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
