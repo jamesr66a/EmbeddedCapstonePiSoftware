@@ -26,8 +26,8 @@
 #include "webserver_view.h"
 
 int main(int argc, char **argv) {
-  if (argc < 2) {
-    std::cerr << "USAGE: main uart_filename\n";
+  if (argc < 3) {
+    std::cerr << "USAGE: main uart_filename csv_filename\n";
     return -1;
   }
 
@@ -45,7 +45,7 @@ int main(int argc, char **argv) {
   set_interface_attribs(fd, B115200, 0);
   set_blocking(fd, 1);
 
-  UART_RECEIVER_Initialize(fd);
+  UART_RECEIVER_Initialize(fd, argv[2]);
   UART_TRANSMITTER_Initialize(fd);
   WEBSERVER_MODEL_Initialize();
   SENSORS_MODEL_Initialize();

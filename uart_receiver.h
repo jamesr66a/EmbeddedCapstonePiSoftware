@@ -3,6 +3,7 @@
 
 #include "generated/UartRxData.pbo.h"
 #include "generated/WiFlyStringWireFormat.pbo.h"
+#include <fstream>
 #include <stdint.h>
 #include <stdbool.h>
 #include <stddef.h>
@@ -37,10 +38,12 @@ typedef struct {
   size_t rx_size;
   uint8_t msg_type;
 
+  std::fstream out_csv;
+
   char receive_buf[sizeof(struct UART_RECEIVER_VARIANT)];
 } UART_RECEIVER_DATA;
 
-void UART_RECEIVER_Initialize(int fd);
+void UART_RECEIVER_Initialize(int fd, std::string csv_filename);
 
 void UART_RECEIVER_Tasks(void);
 
