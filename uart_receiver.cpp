@@ -146,7 +146,8 @@ void UART_RECEIVER_Tasks(void) {
                     << RoverPose_yaw(&var.data.rssi_pair.pose) << "\n" << buf
                     << " " << RSSIData_rssi(&var.data.rssi_pair.rssi) << "\n";
           uart_receiverData.out_csv
-              << buf << "," << RSSIData_rssi(&var.data.rssi_pair.rssi) << ","
+              << RSSIData_frameNum(&var.data.rssi_pair.rssi) << "," << buf
+              << "," << RSSIData_rssi(&var.data.rssi_pair.rssi) << ","
               << RoverPose_xPosition(&var.data.rssi_pair.pose) << ","
               << RoverPose_yPosition(&var.data.rssi_pair.pose) << ","
               << RoverPose_yaw(&var.data.rssi_pair.pose) << "\n" << std::flush;
