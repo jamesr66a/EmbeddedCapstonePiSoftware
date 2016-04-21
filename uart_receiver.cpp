@@ -31,7 +31,8 @@ static void sendMessageToCallbacks(struct UART_RECEIVER_VARIANT *info) {
   }
 }
 
-void UART_RECEIVER_Initialize(int fd, RSSIVectorConstructor *rssi_ctor) {
+void UART_RECEIVER_Initialize(int fd, RSSIVectorConstructor *rssi_ctor,
+                              RoverController *rover_controller) {
   uart_receiverData.state = UART_RECEIVER_STATE_INIT;
   // Initialize callback vector
   uart_receiverData.uart_receiver_callbacks_idx = 0;
@@ -41,6 +42,7 @@ void UART_RECEIVER_Initialize(int fd, RSSIVectorConstructor *rssi_ctor) {
   uart_receiverData.msg_type = 0;
 
   uart_receiverData.rssi_ctor = rssi_ctor;
+  uart_receiverData.rover_controller = rover_controller;
 }
 
 // Consume a message from the receive queue and unpack it as a char.
@@ -211,6 +213,9 @@ void UART_RECEIVER_Tasks(void) {
           }
         } // case DEBUG_INFO
         case TEST_CHAR: {
+        } break;
+        case MOVE_COMPLETE: {
+          uart_receiverData.rover_controller->sendToQueue(var);
         } break;
         } // switch (var.type)
       }

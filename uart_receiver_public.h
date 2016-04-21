@@ -1,11 +1,17 @@
 #ifndef _UART_RECEIVER_PUBLIC_H_
 #define _UART_RECEIVER_PUBLIC_H_
 
+#include "generated/DebugInfo.pbo.h"
 #include "generated/RoverPose.pbo.h"
 #include "generated/RSSIData.pbo.h"
 #include "SafeQueue.h"
 
-typedef enum { DEBUG_INFO, TEST_CHAR, RSSI_PAIR } UART_RECEIVER_VARIANT_TYPE;
+typedef enum {
+  DEBUG_INFO,
+  TEST_CHAR,
+  RSSI_PAIR,
+  MOVE_COMPLETE
+} UART_RECEIVER_VARIANT_TYPE;
 
 struct __attribute__((packed)) PosePositionPair {
   RoverPose pose;

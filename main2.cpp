@@ -19,6 +19,7 @@
 #include "pid_model.h"
 #include "pose_model.h"
 #include "rssi_model.h"
+#include "RoverController.h"
 #include "RSSIVectorConstructor.h"
 #include "serial.h"
 #include "sensors_model.h"
@@ -27,6 +28,8 @@
 #include "warning_model.h"
 #include "webserver_model.h"
 #include "webserver_view.h"
+
+RoverController rover_controller;
 
 int main(int argc, char **argv) {
   if (argc < 3) {
@@ -75,11 +78,10 @@ int main(int argc, char **argv) {
         std::cout << "Wrote to csv" << std::endl;
       };
 
-  RoverController rover_ctrl;
   RSSIVectorConstructor ctor;
   ctor.registerCallback(vector_cb);
   ctor.start();
-  UART_RECEIVER_Initialize(fd, &ctor, &rover_ctrl);
+  UART_RECEIVER_Initialize(fd, &ctor, &rover_controller);
   UART_TRANSMITTER_Initialize(fd);
   WEBSERVER_MODEL_Initialize();
   SENSORS_MODEL_Initialize();
@@ -108,6 +110,7 @@ int main(int argc, char **argv) {
   std::thread warning_model(warning_model_thread_run);
   std::thread encoders_model(encoders_model_thread_run);
   std::thread pose_model(pose_model_thread_run);
+  rover_controller.start();
   srv->run();
   uart_receiver.join();
   uart_transmitter.join();

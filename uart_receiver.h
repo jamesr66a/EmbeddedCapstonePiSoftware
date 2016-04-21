@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include "RSSIVectorConstructor.h"
 #include "uart_receiver_public.h"
+#include "RoverController.h"
 
 typedef enum {
   UART_RECEIVER_STATE_INIT = 0,
@@ -40,11 +41,13 @@ typedef struct {
   uint8_t msg_type;
 
   RSSIVectorConstructor *rssi_ctor;
+  RoverController *rover_controller;
 
   char receive_buf[sizeof(struct UART_RECEIVER_VARIANT)];
 } UART_RECEIVER_DATA;
 
-void UART_RECEIVER_Initialize(int fd, RSSIVectorConstructor *rssi_ctor);
+void UART_RECEIVER_Initialize(int fd, RSSIVectorConstructor *rssi_ctor,
+                              RoverController *rover_controller);
 
 void UART_RECEIVER_Tasks(void);
 
