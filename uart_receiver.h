@@ -8,6 +8,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdlib.h>
+#include "RSSIVectorConstructor.h"
 #include "uart_receiver_public.h"
 
 typedef enum {
@@ -38,12 +39,12 @@ typedef struct {
   size_t rx_size;
   uint8_t msg_type;
 
-  std::fstream out_csv;
+  RSSIVectorConstructor *rssi_ctor;
 
   char receive_buf[sizeof(struct UART_RECEIVER_VARIANT)];
 } UART_RECEIVER_DATA;
 
-void UART_RECEIVER_Initialize(int fd, std::string csv_filename);
+void UART_RECEIVER_Initialize(int fd, RSSIVectorConstructor *rssi_ctor);
 
 void UART_RECEIVER_Tasks(void);
 

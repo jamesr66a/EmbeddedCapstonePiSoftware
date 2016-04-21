@@ -31,8 +31,7 @@ static void sendMessageToCallbacks(struct UART_RECEIVER_VARIANT *info) {
   }
 }
 
-void UART_RECEIVER_Initialize(int fd, std::string out_csv_file,
-                              RSSIVectorConstructor *rssi_ctor) {
+void UART_RECEIVER_Initialize(int fd, RSSIVectorConstructor *rssi_ctor) {
   uart_receiverData.state = UART_RECEIVER_STATE_INIT;
   // Initialize callback vector
   uart_receiverData.uart_receiver_callbacks_idx = 0;
@@ -41,7 +40,6 @@ void UART_RECEIVER_Initialize(int fd, std::string out_csv_file,
   uart_receiverData.rx_size = 0;
   uart_receiverData.msg_type = 0;
 
-  uart_receiverData.out_csv.open(out_csv_file, std::ios_base::app);
   uart_receiverData.rssi_ctor = rssi_ctor;
 }
 

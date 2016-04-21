@@ -13,6 +13,8 @@
 #include "debug.h"
 #include "encoders_model.h"
 #include "errorcheck_model.h"
+#include "generated/RoverPose.pbo.h"
+#include "generated/RSSIData.pbo.h"
 #include "motor_model.h"
 #include "pid_model.h"
 #include "pose_model.h"
@@ -46,9 +48,37 @@ int main(int argc, char **argv) {
   set_interface_attribs(fd, B115200, 0);
   set_blocking(fd, 1);
 
+  std::ofstream out_csv;
+  out_csv.open(argv[2], std::ios_base::app);
+
+  auto vector_cb =
+      [&out_csv](const std::vector<std::tuple<RSSIData, RoverPose> > &vec) {
+        double x = 0, y = 0, yaw = 0;
+        for (auto &tup : vec) {
+          auto &pose = std::get<1>(tup);
+          x += double(RoverPose_xPosition(&pose)) / vec.size();
+          y += double(RoverPose_yPosition(&pose)) / vec.size();
+          yaw += double(RoverPose_yaw(&pose)) / vec.size();
+        }
+        std::string out_string;
+        out_string += std::to_string(x) + "," + std::to_string(y) + "," +
+                      std::to_string(yaw) + ",";
+        for (auto &tup : vec) {
+          char buf[100];
+          auto &rssi = std::get<0>(tup);
+          RSSIData_bssid(&rssi, buf, sizeof(buf));
+          out_string += std::string(buf) + ",";
+          out_string += std::to_string(RSSIData_rssi(&rssi)) + ",";
+        }
+        out_string += "\n";
+        out_csv << out_string << std::flush;
+        std::cout << "Wrote to csv" << std::endl;
+      };
+
   RSSIVectorConstructor ctor;
+  ctor.registerCallback(vector_cb);
   ctor.start();
-  UART_RECEIVER_Initialize(fd, argv[2], &ctor);
+  UART_RECEIVER_Initialize(fd, &ctor);
   UART_TRANSMITTER_Initialize(fd);
   WEBSERVER_MODEL_Initialize();
   SENSORS_MODEL_Initialize();
