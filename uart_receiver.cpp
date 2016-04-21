@@ -31,7 +31,8 @@ static void sendMessageToCallbacks(struct UART_RECEIVER_VARIANT *info) {
   }
 }
 
-void UART_RECEIVER_Initialize(int fd, std::string out_csv_file) {
+void UART_RECEIVER_Initialize(int fd, std::string out_csv_file,
+                              RSSIVectorConstructor *rssi_ctor) {
   uart_receiverData.state = UART_RECEIVER_STATE_INIT;
   // Initialize callback vector
   uart_receiverData.uart_receiver_callbacks_idx = 0;
@@ -41,6 +42,7 @@ void UART_RECEIVER_Initialize(int fd, std::string out_csv_file) {
   uart_receiverData.msg_type = 0;
 
   uart_receiverData.out_csv.open(out_csv_file, std::ios_base::app);
+  uart_receiverData.rssi_ctor = rssi_ctor;
 }
 
 // Consume a message from the receive queue and unpack it as a char.
@@ -145,12 +147,8 @@ void UART_RECEIVER_Tasks(void) {
                     << RoverPose_yPosition(&var.data.rssi_pair.pose) << " "
                     << RoverPose_yaw(&var.data.rssi_pair.pose) << "\n" << buf
                     << " " << RSSIData_rssi(&var.data.rssi_pair.rssi) << "\n";
-          uart_receiverData.out_csv
-              << RSSIData_frameNum(&var.data.rssi_pair.rssi) << "," << buf
-              << "," << RSSIData_rssi(&var.data.rssi_pair.rssi) << ","
-              << RoverPose_xPosition(&var.data.rssi_pair.pose) << ","
-              << RoverPose_yPosition(&var.data.rssi_pair.pose) << ","
-              << RoverPose_yaw(&var.data.rssi_pair.pose) << "\n" << std::flush;
+          uart_receiverData.rssi_ctor->sendToQueue(std::make_tuple(
+              var.data.rssi_pair.rssi, var.data.rssi_pair.pose));
         }
       } else {
         struct UART_RECEIVER_VARIANT_WIRE var;

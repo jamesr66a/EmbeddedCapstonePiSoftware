@@ -17,6 +17,7 @@
 #include "pid_model.h"
 #include "pose_model.h"
 #include "rssi_model.h"
+#include "RSSIVectorConstructor.h"
 #include "serial.h"
 #include "sensors_model.h"
 #include "uart_receiver.h"
@@ -45,7 +46,9 @@ int main(int argc, char **argv) {
   set_interface_attribs(fd, B115200, 0);
   set_blocking(fd, 1);
 
-  UART_RECEIVER_Initialize(fd, argv[2]);
+  RSSIVectorConstructor ctor;
+  ctor.start();
+  UART_RECEIVER_Initialize(fd, argv[2], &ctor);
   UART_TRANSMITTER_Initialize(fd);
   WEBSERVER_MODEL_Initialize();
   SENSORS_MODEL_Initialize();

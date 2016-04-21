@@ -333,7 +333,7 @@ void webserver_view::main(std::string url) {
     render("message", c);
   } else if (std::equal(begin(command_prefix), end(command_prefix),
                         url.begin())) {
-    std::regex r(R "(-?\d+)");
+    std::regex r(R"(-?\d+)");
 
     auto str = request().query_string();
 
@@ -369,7 +369,7 @@ void webserver_view::main(std::string url) {
     render("rover_command_view", c);
   } else if (std::equal(begin(poseset_prefix), end(poseset_prefix),
                         url.begin())) {
-    std::regex r(R "(-?\d+)");
+    std::regex r(R"(-?\d+)");
 
     auto str = request().query_string();
 
