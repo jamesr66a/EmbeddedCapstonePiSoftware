@@ -30,10 +30,11 @@ std::vector<std::string> event_names[] = {
   { "Receive", "Send", "Left Sensor Value", "Right Sensor Value",
     "Center Sensor Value" },                              // sensor 1
   { "Receive", "Buffer Overrun", "Total Messages Rxed" }, // RSSI Collector
-  { "Receive", "Left Count", "Right Count" },             // Encoder 1
-  { "Receive" },                                          // Encoder 2
-  { "Receive" },                                          // Rover Pose
-  { "Receive", "PID Compensation Recalculated" },         // PID Controller
+  { "Receive", "Left Count", "Right Count", "Left Ticks",
+    "Right Ticks" },                              // Encoder 1
+  { "Receive" },                                  // Encoder 2
+  { "Receive" },                                  // Rover Pose
+  { "Receive", "PID Compensation Recalculated" }, // PID Controller
   { "Receive", "Command Duty Cycle Set", "PID Duty Cycle Set" }, // Motor 1
   { "Receive" },                                                 // Motor 2
   {},                                                            // UART RX
@@ -332,7 +333,7 @@ void webserver_view::main(std::string url) {
     render("message", c);
   } else if (std::equal(begin(command_prefix), end(command_prefix),
                         url.begin())) {
-    std::regex r(R"(-?\d+)");
+    std::regex r(R "(-?\d+)");
 
     auto str = request().query_string();
 
@@ -368,7 +369,7 @@ void webserver_view::main(std::string url) {
     render("rover_command_view", c);
   } else if (std::equal(begin(poseset_prefix), end(poseset_prefix),
                         url.begin())) {
-    std::regex r(R"(-?\d+)");
+    std::regex r(R "(-?\d+)");
 
     auto str = request().query_string();
 

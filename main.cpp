@@ -33,7 +33,7 @@ int main(int argc, char **argv) {
 
   google::InitGoogleLogging(argv[0]);
 
-  FLAGS_log_dir="./logs";
+  FLAGS_log_dir = "./logs";
   LOG(INFO) << "test";
 
   // Initialize receive device file
