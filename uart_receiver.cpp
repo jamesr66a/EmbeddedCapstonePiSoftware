@@ -143,10 +143,12 @@ void UART_RECEIVER_Tasks(void) {
                                 (char *)&var.data.rssi_pair.rssi, &a)) {
           char buf[100];
           RSSIData_bssid(&var.data.rssi_pair.rssi, buf, sizeof(buf));
+#if 0
           std::cout << RoverPose_xPosition(&var.data.rssi_pair.pose) << " "
                     << RoverPose_yPosition(&var.data.rssi_pair.pose) << " "
                     << RoverPose_yaw(&var.data.rssi_pair.pose) << "\n" << buf
                     << " " << RSSIData_rssi(&var.data.rssi_pair.rssi) << "\n";
+#endif
           uart_receiverData.rssi_ctor->sendToQueue(std::make_tuple(
               var.data.rssi_pair.rssi, var.data.rssi_pair.pose));
         }
@@ -217,6 +219,16 @@ void UART_RECEIVER_Tasks(void) {
         case MOVE_COMPLETE: {
           uart_receiverData.rover_controller->sendToQueue(var);
         } break;
+        case PROFILE_INFO: {
+          std::cout << "Received Profile Info:\n"
+                    << "\tName: " << var.data.profile_info.name << "\n"
+                    << "\tRuntime: " << var.data.profile_info.runtime << "\n"
+                    << "\tTotal Runtime: "
+                    << var.data.profile_info.total_runtime << "\n"
+                    << "\tFraction: "
+                    << ((float)var.data.profile_info.runtime) /
+                           var.data.profile_info.total_runtime * 100.0 << "\n";
+        }
         } // switch (var.type)
       }
     }

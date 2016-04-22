@@ -12,7 +12,7 @@ void RoverController::start() {
 }
 
 namespace {
-constexpr int32_t grid_size = 60;
+constexpr int32_t grid_size = 30;
 constexpr int32_t
     x_vec[] = { 0, 0, -grid_size, -grid_size, 0, 0, grid_size, grid_size,
                 0, 0, -grid_size, -grid_size, 0, 0, grid_size, grid_size,

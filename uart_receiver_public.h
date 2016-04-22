@@ -10,8 +10,15 @@ typedef enum {
   DEBUG_INFO,
   TEST_CHAR,
   RSSI_PAIR,
-  MOVE_COMPLETE
+  MOVE_COMPLETE,
+  PROFILE_INFO
 } UART_RECEIVER_VARIANT_TYPE;
+
+struct __attribute__((packed)) ProfileInfo {
+  char name[20];
+  uint32_t runtime;
+  uint32_t total_runtime;
+};
 
 struct __attribute__((packed)) PosePositionPair {
   RoverPose pose;
@@ -23,6 +30,7 @@ struct __attribute__((packed)) UART_RECEIVER_VARIANT {
     DebugInfo debug_info;
     uint8_t test_char;
     struct PosePositionPair rssi_pair;
+    struct ProfileInfo profile_info;
   } data;
   uint8_t type;
 };
@@ -31,6 +39,7 @@ struct __attribute__((packed)) UART_RECEIVER_VARIANT_WIRE {
   union {
     DebugInfo debug_info;
     uint8_t test_char;
+    struct ProfileInfo profile_info;
   } data;
   uint8_t type;
 };

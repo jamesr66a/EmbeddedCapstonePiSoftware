@@ -6,8 +6,13 @@ CXX=g++
 CFLAGS=-g -Wall -Werror -Wno-unused-function
 CXXFLAGS=-g -Wall -Werror -Wno-unused-function
 
-team16monitor: main.cpp uart_receiver debug uart_transmitter serial webserver_model webserver_view RSSIVectorConstructor RoverPose sensors_model rssi_model pid_model MotorCommand errorcheck_model warning_model encoders_model motor_model pose_model
+
+team16monitor: main.cpp uart_receiver debug uart_transmitter serial webserver_model webserver_view RSSIVectorConstructor RoverPose sensors_model rssi_model pid_model MotorCommand errorcheck_model warning_model encoders_model motor_model pose_model RoverController
 	$(CXX) $(CXXFLAGS) -std=c++11 main.cpp build/*.o -o team16monitor -pthread -lcppcms -lbooster -lglog
+
+team16monitor2: main2.cpp uart_receiver debug uart_transmitter serial webserver_model webserver_view RSSIVectorConstructor RoverPose sensors_model rssi_model pid_model MotorCommand errorcheck_model warning_model encoders_model motor_model pose_model RoverController
+	$(CXX) $(CXXFLAGS) -std=c++11 main2.cpp build/*.o -o team16monitor2 -pthread -lcppcms -lbooster -lglog
+
 
 test: RSSIVectorConstructor_test
 	./RSSIVectorConstructor_test
@@ -86,6 +91,9 @@ encoders_model: generated/DebugInfo.pbo.h encoders_model.h encoders_model.cpp
 
 pose_model: generated/DebugInfo.pbo.h pose_model.h pose_model.cpp
 	$(CXX) $(CXXFLAGS) -c -std=c++11 pose_model.cpp -o build/pose_model.o
+
+RoverController: RoverController.h RoverController.cpp
+	$(CXX) $(CXXFLAGS) -c -std=c++11 RoverController.cpp -o build/RoverController.o
 
 proboc_generate:
 	cd generated && ./make.sh && cd ..
