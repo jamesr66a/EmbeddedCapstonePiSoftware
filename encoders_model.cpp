@@ -2,8 +2,6 @@
 
 #include "debug.h"
 
-#include <glog/logging.h>
-
 ENCODERS_MODEL_DATA encoders_modelData;
 
 // Public functions
@@ -15,14 +13,12 @@ void sendToEncodersModelQueue(DebugInfo *info) {
 int encoders_aggregate_debug_info_count() {
   std::lock_guard<std::mutex> guard(encoders_modelData.data_mutex);
   auto num = encoders_modelData.total_num;
-  LOG(INFO) << "Requested encoders debug info count " << num;
   return num;
 }
 
 float encoders_debug_info_rate_per_minute() {
   std::lock_guard<std::mutex> guard(encoders_modelData.data_mutex);
   auto rate = encoders_modelData.rate_per_min;
-  LOG(INFO) << "Requested encoders debug info rate " << rate;
   return rate;
 }
 
@@ -35,7 +31,6 @@ std::vector<DebugInfo> encoders_aggregate_info_vector() {
 
 void ENCODERS_MODEL_Initialize() {
   encoders_modelData.state = ENCODERS_MODEL_INIT;
-  LOG(INFO) << "Initializing encoders model";
 }
 
 void ENCODERS_MODEL_Tasks() {

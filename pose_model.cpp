@@ -2,8 +2,6 @@
 
 #include "debug.h"
 
-#include <glog/logging.h>
-
 POSE_MODEL_DATA pose_modelData;
 
 // Public functions
@@ -15,14 +13,12 @@ void sendToPoseModelQueue(DebugInfo *info) {
 int pose_aggregate_debug_info_count() {
   std::lock_guard<std::mutex> guard(pose_modelData.data_mutex);
   auto num = pose_modelData.total_num;
-  LOG(INFO) << "Requested pose debug info count " << num;
   return num;
 }
 
 float pose_debug_info_rate_per_minute() {
   std::lock_guard<std::mutex> guard(pose_modelData.data_mutex);
   auto rate = pose_modelData.rate_per_min;
-  LOG(INFO) << "Requested pose debug info rate " << rate;
   return rate;
 }
 
@@ -35,7 +31,6 @@ std::vector<DebugInfo> pose_aggregate_info_vector() {
 
 void POSE_MODEL_Initialize() {
   pose_modelData.state = POSE_MODEL_INIT;
-  LOG(INFO) << "Initializing pose model";
 }
 
 void POSE_MODEL_Tasks() {

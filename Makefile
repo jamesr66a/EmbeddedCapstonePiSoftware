@@ -8,11 +8,10 @@ CXXFLAGS=-g -Wall -Werror -Wno-unused-function
 
 
 team16monitor: main.cpp uart_receiver debug uart_transmitter serial webserver_model webserver_view RSSIVectorConstructor RoverPose sensors_model rssi_model pid_model MotorCommand errorcheck_model warning_model encoders_model motor_model pose_model RoverController
-	$(CXX) $(CXXFLAGS) -std=c++11 main.cpp build/*.o -o team16monitor -pthread -lcppcms -lbooster -lglog
+	$(CXX) $(CXXFLAGS) -std=c++11 main.cpp build/*.o -o team16monitor -pthread -lcppcms -lbooster
 
 team16monitor2: main2.cpp uart_receiver debug uart_transmitter serial webserver_model webserver_view RSSIVectorConstructor RoverPose sensors_model rssi_model pid_model MotorCommand errorcheck_model warning_model encoders_model motor_model pose_model RoverController
-	$(CXX) $(CXXFLAGS) -std=c++11 main2.cpp build/*.o -o team16monitor2 -pthread -lcppcms -lbooster -lglog
-
+	$(CXX) $(CXXFLAGS) -std=c++11 main2.cpp build/*.o -o team16monitor2 -pthread -lcppcms -lbooster 
 
 test: RSSIVectorConstructor_test
 	./RSSIVectorConstructor_test

@@ -15,7 +15,6 @@
 #include <cppcms/applications_pool.h>
 #include <cppcms/service.h>
 #include <cppcms/http_response.h>
-#include <glog/logging.h>
 #include <iostream>
 #include <regex>
 #include <string>
@@ -355,7 +354,6 @@ void webserver_view::main(std::string url) {
     }
 
     if (idx >= 2) {
-      LOG(INFO) << x << "," << y;
       struct UART_TRANSMITTER_VARIANT var;
       var.type = CONTROL_CMD;
       RoverPose_init(&var.data.controlCmd);
