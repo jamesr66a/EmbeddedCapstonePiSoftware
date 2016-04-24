@@ -4,14 +4,26 @@ CC=gcc
 CXX=g++
 
 CFLAGS=-g -Wall -Werror -Wno-unused-function
-CXXFLAGS=-g -Wall -Werror -Wno-unused-function
+CXXFLAGS=-g -Wall -Werror -Wno-unused-function 
 
+OBJS= uart_receiver debug uart_transmitter serial webserver_model webserver_view RSSIVectorConstructor RoverPose sensors_model rssi_model pid_model MotorCommand errorcheck_model warning_model encoders_model motor_model pose_model RoverController astar_model online_astar_rule IRSensorData
 
-team16monitor: main.cpp uart_receiver debug uart_transmitter serial webserver_model webserver_view RSSIVectorConstructor RoverPose sensors_model rssi_model pid_model MotorCommand errorcheck_model warning_model encoders_model motor_model pose_model RoverController
-	$(CXX) $(CXXFLAGS) -std=c++11 main.cpp build/*.o -o team16monitor -pthread -lcppcms -lbooster
+team16monitor: main.cpp	$(OBJS) main
+	$(CXX) $(CXXFLAGS) -std=c++11 main.o build/*.o online_astar/build/*.o -o team16monitor -pthread -lcppcms -lbooster
 
-team16monitor2: main2.cpp uart_receiver debug uart_transmitter serial webserver_model webserver_view RSSIVectorConstructor RoverPose sensors_model rssi_model pid_model MotorCommand errorcheck_model warning_model encoders_model motor_model pose_model RoverController
-	$(CXX) $(CXXFLAGS) -std=c++11 main2.cpp build/*.o -o team16monitor2 -pthread -lcppcms -lbooster 
+main: main.cpp
+	$(CXX) $(CXXFLAGS) -c -std=c++11 main.cpp -o main.o
+
+team16monitor2: main2.cpp $(OBJS) main2
+	$(CXX) $(CXXFLAGS) -std=c++11 main2.o build/*.o online_astar/build/*.o -o team16monitor2 -pthread -lcppcms -lbooster 
+
+main2: main2.cpp
+	$(CXX) $(CXXFLAGS) -c -std=c++11 main2.cpp -o main2.o
+
+.PHONY: online_astar_rule
+
+online_astar_rule:
+	$(MAKE) -C online_astar
 
 test: RSSIVectorConstructor_test
 	./RSSIVectorConstructor_test
@@ -24,6 +36,9 @@ RSSIVectorConstructor: RSSIData RoverPose RSSIVectorConstructor.h RSSIVectorCons
 
 RSSIData: generated/RSSIData.pbo.c generated/RSSIData.pbo.h csiphash proboc_generate
 	$(CXX) $(CXXFLAGS) -c -std=c++11 generated/RSSIData.pbo.c -o build/RSSIData.pbo.o
+
+IRSensorData: generated/IRSensorData.pbo.h generated/IRSensorData.pbo.c
+	$(CXX) $(CXXFLAGS) -c -std=c++11 generated/IRSensorData.pbo.c -o build/IRSensorData.pbo.o
 
 MotorCommand: generated/MotorCommand.pbo.c generated/MotorCommand.pbo.h csiphash proboc_generate
 	$(CXX) $(CXXFLAGS) -c -std=c++11 generated/MotorCommand.pbo.c -o build/MotorCommand.pbo.o
@@ -93,6 +108,9 @@ pose_model: generated/DebugInfo.pbo.h pose_model.h pose_model.cpp
 
 RoverController: RoverController.h RoverController.cpp
 	$(CXX) $(CXXFLAGS) -c -std=c++11 RoverController.cpp -o build/RoverController.o
+
+astar_model: astar_model_public.h astar_model.h astar_model.cpp
+	$(CXX) $(CXXFLAGS) -c -std=c++11 astar_model.cpp -o build/astar_model.o
 
 proboc_generate:
 	cd generated && ./make.sh && cd ..

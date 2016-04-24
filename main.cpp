@@ -9,6 +9,7 @@
 #include <thread>
 #include <unistd.h>
 
+#include "astar_model.h"
 #include "debug.h"
 #include "encoders_model.h"
 #include "errorcheck_model.h"
@@ -80,6 +81,7 @@ int main(int argc, char **argv) {
   RSSI_MODEL_Initialize();
   PID_MODEL_Initialize();
   MOTOR_MODEL_Initialize();
+  ASTAR_MODEL_Initialize();
 
   std::unique_ptr<cppcms::service> srv;
   try {
@@ -102,6 +104,7 @@ int main(int argc, char **argv) {
   std::thread warning_model(warning_model_thread_run);
   std::thread encoders_model(encoders_model_thread_run);
   std::thread pose_model(pose_model_thread_run);
+  std::thread astar_model(astar_model_thread_run);
   srv->run();
   uart_receiver.join();
   uart_transmitter.join();
@@ -114,4 +117,5 @@ int main(int argc, char **argv) {
   warning_model.join();
   encoders_model.join();
   pose_model.join();
+  astar_model.join();
 }

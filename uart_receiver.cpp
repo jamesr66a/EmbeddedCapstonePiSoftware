@@ -1,3 +1,4 @@
+#include "astar_model_public.h"
 #include "debug.h"
 #include "debuginfo.h"
 #include "encoders_model_public.h"
@@ -190,6 +191,16 @@ void UART_RECEIVER_Tasks(void) {
 
           if (DebugInfo_identifier(&received_obj) == SENSOR1_IDENTIFIER) {
             sendToSensorsModelQueue(&received_obj);
+            if (DebugInfo_debugID(&received_obj) == Sensor1CenterSensorValue) {
+              AStarVariant asv;
+              asv.type = SENSOR_INFO;
+              IRSensorData_init(&asv.data.ir_data);
+              IRSensorData_set_front(&asv.data.ir_data,
+                                     DebugInfo_data(&received_obj));
+              IRSensorData_to_bytes(&asv.data.ir_data,
+                                    (char *)&asv.data.ir_data, 0);
+              sendToAStarModelQueue(&asv);
+            }
           }
           if (DebugInfo_identifier(&received_obj) ==
               RSSI_COLLECTOR_IDENTIFIER) {
@@ -212,12 +223,29 @@ void UART_RECEIVER_Tasks(void) {
           }
           if (DebugInfo_identifier(&received_obj) == POSE_IDENTIFIER) {
             sendToPoseModelQueue(&received_obj);
+            AStarVariant var;
+            switch (DebugInfo_debugID(&received_obj)) {
+            case XUpdated: {
+              var.type = CURRENT_POSITION_X;
+            } break;
+            case YUpdated: {
+              var.type = CURRENT_POSITION_Y;
+            } break;
+            default: { goto fail; } break;
+            }
+            var.data.position = DebugInfo_data(&received_obj);
+            sendToAStarModelQueue(&var);
+          fail:
+            ;
           }
         } // case DEBUG_INFO
         case TEST_CHAR: {
         } break;
         case MOVE_COMPLETE: {
           uart_receiverData.rover_controller->sendToQueue(var);
+          AStarVariant var;
+          var.type = ASTAR_MOVE_COMPLETE;
+          sendToAStarModelQueue(&var);
         } break;
         case PROFILE_INFO: {
           std::cout << "Received Profile Info:\n"

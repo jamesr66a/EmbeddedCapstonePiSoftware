@@ -4,6 +4,8 @@
 
 namespace online_astar {
 
+#define LATTICE_LENGTH (15)
+
 float Node::euclidean_distance(int32_t other_x, int32_t other_y) {
   using std::sqrt;
   int x_norm = x - other_x;
@@ -16,8 +18,10 @@ Node::successors(const std::tuple<int32_t, int32_t> &x_bounds,
                  const std::tuple<int32_t, int32_t> &y_bounds) const {
 
   std::vector<std::tuple<int32_t, int32_t> > retval = {
-    std::make_tuple(x + 1, y), std::make_tuple(x - 1, y),
-    std::make_tuple(x, y + 1), std::make_tuple(x, y - 1)
+    std::make_tuple(x + LATTICE_LENGTH, y),
+    std::make_tuple(x - LATTICE_LENGTH, y),
+    std::make_tuple(x, y + LATTICE_LENGTH),
+    std::make_tuple(x, y - LATTICE_LENGTH)
   };
 
   retval.erase(std::remove_if(begin(retval), end(retval),

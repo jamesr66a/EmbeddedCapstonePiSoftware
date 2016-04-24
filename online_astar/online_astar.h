@@ -11,11 +11,13 @@
 
 namespace online_astar {
 
+#if 0
 namespace {
 int32_t manhattan_distance(int32_t x1, int32_t x2, int32_t y1, int32_t y2) {
   return abs(x1 - x2) + abs(y1 - y2);
 }
 }
+#endif
 
 class NodePointComparator {
 public:
@@ -24,10 +26,10 @@ public:
       : x(x), y(y), start_x(start_x), start_y(start_y) {}
   bool operator()(const std::shared_ptr<Node> &lhs,
                   const std::shared_ptr<Node> &rhs) {
-    auto lhs_value = manhattan_distance(lhs->x, start_x, lhs->y, start_y);
-    auto rhs_value = manhattan_distance(rhs->x, start_x, rhs->y, start_y);
-    return (lhs_value + lhs->euclidean_distance(x, y)) >
-           (rhs_value + rhs->euclidean_distance(x, y));
+    //auto lhs_value = manhattan_distance(lhs->x, start_x, lhs->y, start_y);
+    //auto rhs_value = manhattan_distance(rhs->x, start_x, rhs->y, start_y);
+    return (lhs->euclidean_distance(x, y)) >
+           (rhs->euclidean_distance(x, y));
   }
 
 private:
@@ -52,7 +54,7 @@ public:
                      const std::tuple<int32_t, int32_t> &y_limits);
 
 private:
-  uint32_t target_x, target_y, start_x, start_y;
+  int32_t target_x, target_y, start_x, start_y;
   std::priority_queue<std::shared_ptr<Node>,
                       std::vector<std::shared_ptr<Node> >,
                       NodePointComparator> queue;

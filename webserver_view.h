@@ -10,6 +10,9 @@ struct message : public cppcms::base_content {
   std::string data_rate;
   std::string message_list;
 };
+struct astar_message : public cppcms::base_content {
+  std::string queue_list;
+};
 }
 
 class webserver_view : public cppcms::application {

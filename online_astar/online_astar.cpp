@@ -28,7 +28,7 @@ void OnlineAstar::reportSuccess(const std::shared_ptr<Node> &in,
       auto x = std::get<0>(s), y = std::get<1>(s);
       auto query_ptr = matrix.query(x, y);
       if (query_ptr == nullptr) {
-        bool is_goal = x == target_x && y == target_y;
+        bool is_goal = (x == target_x && y == target_y);
         auto instance = std::make_shared<Node>(x, y, is_goal, false);
         queue.push(instance);
       } //  if (query_ptr == nullptr)

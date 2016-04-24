@@ -1,6 +1,7 @@
 #include "webserver_model.h"
 #include "webserver_view.h"
 
+#include "astar_model_public.h"
 #include "encoders_model_public.h"
 #include "errorcheck_model_public.h"
 #include "motor_model_public.h"
@@ -61,6 +62,7 @@ void webserver_view::main(std::string url) {
 
   std::string command_prefix("/command");
   std::string poseset_prefix("/poseset");
+  std::string nav_prefix("/astar");
 
   if (url == "/") {
 
@@ -404,5 +406,40 @@ void webserver_view::main(std::string url) {
     }
 
     render("rover_command_view", c);
+  } else if (std::equal(begin(nav_prefix), end(nav_prefix), url.begin())) {
+    std::regex r(R"(-?\d+)");
+
+    auto str = request().query_string();
+
+    auto b = std::sregex_iterator(str.begin(), str.end(), r);
+    auto e = std::sregex_iterator();
+
+    int x = 0, y = 0;
+    size_t idx = 0;
+    auto i = b;
+    for (; i != e; i++, idx++) {
+      switch (idx) {
+      case 0:
+        x = std::stoi(i->str());
+        break;
+      case 1:
+        y = std::stoi(i->str());
+        break;
+      }
+    }
+
+    if (idx >= 2) {
+      AStarVariant var;
+      var.type = ASTAR_SETPOINT;
+      RoverPose_init(&var.data.astar_setpoint);
+      RoverPose_set_xPosition(&var.data.astar_setpoint, x);
+      RoverPose_set_yPosition(&var.data.astar_setpoint, y);
+      RoverPose_to_bytes(&var.data.astar_setpoint,
+                         (char *)&var.data.astar_setpoint, 0);
+      sendToAStarModelQueue(&var);
+    }
+
+    content::astar_message m;
+    render("astar_view", m);
   }
 }
