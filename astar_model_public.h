@@ -9,7 +9,7 @@
 
 typedef enum {
   ASTAR_SETPOINT,
-  SENSOR_INFO,
+  NODE_BLOCKED,
   ASTAR_MOVE_COMPLETE,
   CURRENT_POSITION_X,
   CURRENT_POSITION_Y
@@ -21,7 +21,7 @@ struct AStarVariant {
     RoverPose astar_setpoint;
     IRSensorData ir_data;
     int32_t position;
-  } data; 
+  } data;
 };
 
 void sendToAStarModelQueue(AStarVariant *info);

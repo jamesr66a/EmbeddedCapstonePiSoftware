@@ -69,24 +69,14 @@ void ASTAR_MODEL_Tasks() {
         astar_log << "No more points to explore" << std::endl;
       }
     } break;
-    case SENSOR_INFO: {
-      if (astar_modelData.astar_running &&
-          IRSensorData_front(&received_msg.data.ir_data) < 25) {
+    case NODE_BLOCKED: {
+      if (!astar_modelData.curr->blocked && astar_modelData.astar_running) {
         astar_log << "Node blocked!" << std::endl;
         astar_modelData.curr->blocked = true;
-        astar_modelData.oas->reportSuccess(astar_modelData.curr,
-                                           std::make_tuple(-50, 50),
-                                           std::make_tuple(-50, 50));
-        sendCommand(astar_modelData.prev->x, astar_modelData.prev->y);
-        // TODO: another state for when we complete the move to prev
-        struct UART_TRANSMITTER_VARIANT var;
-        var.type = COMMAND_CANCEL;
-        sendToUartQueue(&var);
       }
     } break;
     case ASTAR_MOVE_COMPLETE: {
       if (astar_modelData.astar_running) {
-        astar_modelData.curr->blocked = false;
         if (std::sqrt(
                 std::pow(astar_modelData.curr->x - astar_modelData.target_x,
                          2.0) +
@@ -98,8 +88,8 @@ void ASTAR_MODEL_Tasks() {
         }
 
         astar_modelData.oas->reportSuccess(astar_modelData.curr,
-                                           std::make_tuple(-50, 50),
-                                           std::make_tuple(-50, 50));
+                                           std::make_tuple(-1000, 1000),
+                                           std::make_tuple(-1000, 1000));
         astar_modelData.prev = astar_modelData.curr;
         astar_modelData.curr = astar_modelData.oas->selectSuccessor();
 

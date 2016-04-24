@@ -191,16 +191,6 @@ void UART_RECEIVER_Tasks(void) {
 
           if (DebugInfo_identifier(&received_obj) == SENSOR1_IDENTIFIER) {
             sendToSensorsModelQueue(&received_obj);
-            if (DebugInfo_debugID(&received_obj) == Sensor1CenterSensorValue) {
-              AStarVariant asv;
-              asv.type = SENSOR_INFO;
-              IRSensorData_init(&asv.data.ir_data);
-              IRSensorData_set_front(&asv.data.ir_data,
-                                     DebugInfo_data(&received_obj));
-              IRSensorData_to_bytes(&asv.data.ir_data,
-                                    (char *)&asv.data.ir_data, 0);
-              sendToAStarModelQueue(&asv);
-            }
           }
           if (DebugInfo_identifier(&received_obj) ==
               RSSI_COLLECTOR_IDENTIFIER) {
@@ -256,7 +246,13 @@ void UART_RECEIVER_Tasks(void) {
                     << "\tFraction: "
                     << ((float)var.data.profile_info.runtime) /
                            var.data.profile_info.total_runtime * 100.0 << "\n";
-        }
+        } break;
+        case BLOCKED: {
+            std::cout << "*************************blocked***************************" << std::endl;
+            AStarVariant var;
+            var.type = NODE_BLOCKED;
+            sendToAStarModelQueue(&var);
+        } break;
         } // switch (var.type)
       }
     }
