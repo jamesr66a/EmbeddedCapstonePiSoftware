@@ -6,6 +6,9 @@
 
 #include "debug.h"
 
+#define LOWER_LIMIT (std::numeric_limits<int32_t>::min())
+#define UPPER_LIMIT (std::numeric_limits<int32_t>::max())
+
 ASTAR_MODEL_DATA astar_modelData;
 
 // Public functions
@@ -87,9 +90,9 @@ void ASTAR_MODEL_Tasks() {
           break;
         }
 
-        astar_modelData.oas->reportSuccess(astar_modelData.curr,
-                                           std::make_tuple(-1000, 1000),
-                                           std::make_tuple(-1000, 1000));
+        astar_modelData.oas->reportSuccess(
+            astar_modelData.curr, std::make_tuple(LOWER_LIMIT, UPPER_LIMIT),
+            std::make_tuple(LOWER_LIMIT, UPPER_LIMIT));
         astar_modelData.prev = astar_modelData.curr;
         astar_modelData.curr = astar_modelData.oas->selectSuccessor();
 

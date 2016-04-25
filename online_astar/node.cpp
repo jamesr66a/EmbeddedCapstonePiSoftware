@@ -1,10 +1,11 @@
 #include "node.h"
 
 #include <cmath>
+#include <limits>
 
 namespace online_astar {
 
-#define LATTICE_LENGTH (15)
+#define LATTICE_LENGTH (30)
 
 float Node::euclidean_distance(int32_t other_x, int32_t other_y) {
   using std::sqrt;
