@@ -5,7 +5,7 @@
 #include <mutex>
 #include <condition_variable>
 
-#include <gtest/gtest.h>
+//#include <gtest/gtest.h>
 
 template <class T> class SafeQueue {
 public:
@@ -44,10 +44,10 @@ private:
   mutable std::mutex m;
   std::condition_variable c;
 
-  FRIEND_TEST(RegisterCallbackTest, CallbackCheck);
-  FRIEND_TEST(SendToQueueTest, EnqueueTest);
-  FRIEND_TEST(SimpleProcessTest, TestProcess);
-  FRIEND_TEST(FullVectorTest, TestFullVector);
+//  FRIEND_TEST(RegisterCallbackTest, CallbackCheck);
+//  FRIEND_TEST(SendToQueueTest, EnqueueTest);
+//  FRIEND_TEST(SimpleProcessTest, TestProcess);
+//  FRIEND_TEST(FullVectorTest, TestFullVector);
 };
 
 #endif /* _SAFEQUEUE_H_ */

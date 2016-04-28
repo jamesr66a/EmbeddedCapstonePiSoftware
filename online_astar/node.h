@@ -1,7 +1,7 @@
 #ifndef _NODE_H_
 #define _NODE_H_
 
-#include <gtest/gtest.h>
+//#include <gtest/gtest.h>
 #include <stdint.h>
 #include <tuple>
 #include <vector>

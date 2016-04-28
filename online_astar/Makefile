@@ -1,8 +1,8 @@
-CC=gcc
-CXX=g++
+CC=distcc arm-linux-gnueabihf-gcc
+CXX=distcc arm-linux-gnueabihf-g++
 
 CFLAGS=-g -Wall -Werror
-CXXFLAGS=-g -Wall -Werror -std=c++11 -fno-exceptions -Wno-unused-private-field
+CXXFLAGS=-I../gtest_include -g -Wall -Werror -std=c++11 -fno-exceptions -Wno-unused-private-field
 
 GTEST=-Igtest_include ../gtest-all.o ../gtest_main.o -pthread
 

@@ -4,7 +4,7 @@
 #include "node.h"
 #include "TwoDSparseNodeMatrix.h"
 
-#include <gtest/gtest.h>
+//#include <gtest/gtest.h>
 #include <functional>
 #include <memory>
 #include <queue>
@@ -61,7 +61,7 @@ private:
   TwoDSparseNodeMatrix matrix;
   bool initial_step_called = false;
 
-  FRIEND_TEST(OnlineAStarTest, TestSelectSuccessor);
+//  FRIEND_TEST(OnlineAStarTest, TestSelectSuccessor);
 };
 
 } // namespace online_astar

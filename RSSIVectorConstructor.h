@@ -3,7 +3,7 @@
 
 #include "generated/RSSIData.pbo.h"
 #include "generated/RoverPose.pbo.h"
-#include "gtest/gtest.h"
+//#include "gtest/gtest.h"
 #include "SafeQueue.h"
 
 #include <functional>
@@ -39,10 +39,12 @@ private:
 
   uint32_t rssi_seq_expected = 0, pose_seq_expected = 0;
 
+#if 0
   FRIEND_TEST(RegisterCallbackTest, CallbackCheck);
   FRIEND_TEST(SendToQueueTest, EnqueueTest);
   FRIEND_TEST(SimpleProcessTest, TestProcess);
   FRIEND_TEST(FullVectorTest, TestFullVector);
+#endif
 };
 
 #endif /* _RSSIVECTORCONSTRUCTOR_H_ */

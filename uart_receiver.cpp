@@ -14,6 +14,7 @@
 #include "warning_model_public.h"
 #include "webserver_model.h"
 
+#include <cstring>
 #include <iostream>
 #include <unistd.h>
 
